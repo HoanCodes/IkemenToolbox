@@ -1,0 +1,36 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:helpers="using:IkemenToolbox.Helpers">
+  <!-- Add Resources Here -->
+  <Color x:Key="TabHeaderColor">#252525</Color>
+  <Color x:Key="TabContentColor">#303030</Color>
+  <Color x:Key="ContentBorder">#404040</Color>
+  <Design.PreviewWith>
+    <StackPanel Background="Transparent">
+      <Border Background="{StaticResource TabHeaderColor}" Padding="10">
+        <StackPanel  Height="40" Orientation="Horizontal" HorizontalAlignment="Right">
+          <Button VerticalAlignment="Center">
+            <TextBlock Text="Hello" />
+          </Button>
+        </StackPanel>
+      </Border>
+      <TabControl Height="200" Width="500" TabStripPlacement="Left" Padding="0" Background="{StaticResource TabHeaderColor}">
+        <TabItem Header="Attacks">
+          <TabControl Background="{StaticResource TabContentColor}" Padding="0">
+            <TabItem Header="Normals">
+              <Panel>
+                <Border Padding="10" CornerRadius="10" Margin="10" Background="{StaticResource ContentBorder}">
+                  <TextBlock Text="I'm fine." Margin="10" />
+                </Border>
+              </Panel>
+            </TabItem>
+            <TabItem Header="Specials" />
+            <TabItem Header="Supers" />
+          </TabControl>
+        </TabItem>
+        <TabItem Header="Commands" />
+        <TabItem Header="Sounds" />
+      </TabControl>
+    </StackPanel>
+  </Design.PreviewWith>
+</ResourceDictionary>

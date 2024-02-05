@@ -1,0 +1,110 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:m="using:IkemenToolbox.Models"
+        xmlns:vm="using:IkemenToolbox.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="IkemenToolbox.Views.HomeWindow"
+        x:DataType="vm:HomeViewModel"
+        Background="Transparent"
+        Position="-1900,240"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="IkemenToolbox" TransparencyLevelHint="AcrylicBlur">
+  <Grid VerticalAlignment="Stretch" RowDefinitions="Auto,*" Background="{StaticResource TabHeaderColor}">
+    <Grid Margin="10">
+      <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
+        <Button Width="160" HorizontalContentAlignment="Center" DockPanel.Dock="Right" Command="{Binding EditCommand}">Change Character</Button>
+        <TextBlock Text="{Binding FighterManager.Fighter.DisplayName}" FontSize="30" VerticalAlignment="Center" />
+      </DockPanel>
+      <DockPanel HorizontalAlignment="Stretch" LastChildFill="True" Background="{StaticResource TabHeaderColor}" IsVisible="{Binding IsEditingDefinitionPath}">
+        <Button Width="80" HorizontalContentAlignment="Center" DockPanel.Dock="Right" Command="{Binding CancelCommand}">Cancel</Button>
+        <Button Width="80" HorizontalContentAlignment="Center" DockPanel.Dock="Right" Command="{Binding SetDefinitionPathCommand}">Set</Button>
+        <TextBox Text="{Binding DefinitionPath}" Margin="10" Watermark="Fighter Definition Path" HorizontalAlignment="Stretch" DockPanel.Dock="Left" />
+      </DockPanel>
+    </Grid>
+    <TabControl x:Name="MainTabControl" TabStripPlacement="Left" Background="{StaticResource TabHeaderColor}" Grid.Row="1">
+      <TabItem Header="Info">
+      </TabItem>
+      <TabItem Header="Constants">
+      </TabItem>
+      <TabItem Header="Entry States">
+        <TabControl Background="{StaticResource TabContentColor}">
+          <TabItem Header="States">
+          </TabItem>
+          <TabItem Header="Commands">
+            <ListBox ItemsSource="{Binding FighterManager.Fighter.Commands}" Background="{StaticResource TabContentColor}" Padding="0">
+              <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="m:InputCommand">
+                  <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </TabItem>
+        </TabControl>
+      </TabItem>
+      <TabItem Header="States">
+        <TabControl Padding="0" Background="{StaticResource TabContentColor}" x:Name="StatesTab" VerticalAlignment="Stretch" ItemsSource="{Binding FighterManager.Fighter.StateDefinitions}">
+          <TabControl.ItemTemplate>
+            <DataTemplate x:DataType="m:StateDefinition">
+              <TextBlock Text="{Binding Name}" />
+            </DataTemplate>
+          </TabControl.ItemTemplate>
+          <TabControl.ContentTemplate>
+            <DataTemplate x:DataType="m:StateDefinition">
+              <ScrollViewer VerticalAlignment="Stretch">
+                <ItemsControl ItemsSource="{Binding States}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="m:State">
+                      <Expander Margin="5,0,5,5" HorizontalAlignment="Stretch" Padding="0" Background="Black" CornerRadius="5">
+                        <Expander.Header>
+                          <Grid Margin="-15,0,0,0">
+                            <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="Auto" />
+                              <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Background="DimGray" Margin="5" Height="90" Width="90" CornerRadius="5" />
+                            <TextBlock Text="IMAGE" VerticalAlignment="Center" HorizontalAlignment="Center">
+                              <TextBlock.RenderTransform>
+                                <RotateTransform Angle="45" />
+                              </TextBlock.RenderTransform>
+                            </TextBlock>
+                            <StackPanel Margin="5" HorizontalAlignment="Stretch" Grid.Column="1">
+                              <TextBlock Foreground="Gray" Text="{Binding Type}" Margin="5,5,5,0" />
+                              <TextBlock Text="{Binding Name}" FontSize="20" />
+                              <TextBox Text="{Binding Value}" Watermark="Value" Margin="5" />
+                            </StackPanel>
+                          </Grid>
+                        </Expander.Header>
+                        <StackPanel>
+                          <ItemsControl ItemsSource="{Binding Triggers}">
+                            <ItemsControl.ItemTemplate>
+                              <DataTemplate x:DataType="m:Trigger">
+                                <Border CornerRadius="5" Background="{StaticResource ContentBorder}" Padding="5" Margin="25,5,5,0">
+                                  <StackPanel>
+                                    <TextBlock Text="{Binding Key, StringFormat='trigger{0}'}" Margin="5,0" />
+                                    <ItemsControl ItemsSource="{Binding Values}">
+                                      <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                          <TextBox Text="{Binding .}" Margin="0,5,0,0" />
+                                        </DataTemplate>
+                                      </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                  </StackPanel>
+                                </Border>
+                              </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                          </ItemsControl>
+                        </StackPanel>
+                      </Expander>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </ScrollViewer>
+            </DataTemplate>
+          </TabControl.ContentTemplate>
+        </TabControl>
+      </TabItem>
+    </TabControl>
+  </Grid>
+</Window>

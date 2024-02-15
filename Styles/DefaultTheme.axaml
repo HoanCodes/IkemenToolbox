@@ -18,11 +18,15 @@
         <TabItem Header="Attacks">
           <TabControl Background="{StaticResource TabContentColor}" Padding="0">
             <TabItem Header="Normals">
-              <Panel>
-                <Border Padding="10" CornerRadius="10" Margin="10" Background="{StaticResource ContentBorder}">
-                  <TextBlock Text="I'm fine." Margin="10" />
-                </Border>
-              </Panel>
+				<StackPanel >
+					<Border Padding="10" CornerRadius="10" Margin="10" Background="{StaticResource ContentBorder}">
+						<StackPanel Spacing="5">
+							<TextBlock Text="Uppercut" Margin="5" FontWeight="Bold" />
+							<TextBox Watermark="Command" CornerRadius="10" Background="Transparent" BorderBrush="Transparent" FontWeight="Bold"/>
+							<TextBox Watermark="Time" CornerRadius="10" Background="{StaticResource TabContentColor}"/>
+						</StackPanel>
+					</Border>
+				</StackPanel>
             </TabItem>
             <TabItem Header="Specials" />
             <TabItem Header="Supers" />

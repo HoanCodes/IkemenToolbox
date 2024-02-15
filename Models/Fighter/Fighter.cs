@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using IkemenToolbox.Extensions;
+using IkemenToolbox.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,6 +15,13 @@ namespace IkemenToolbox.Models
         #region Display Values
 
         public string DisplayName => Info.TryGetValue("displayname");
+        public StateDefinition EntryStateDefinition => StateDefinitions.FirstOrDefault(x => x.Id == -1);
+
+        private void RaiseDisplayPropertiesChanged()
+        {
+            OnPropertyChanged(nameof(DisplayName));
+            OnPropertyChanged(nameof(EntryStateDefinition));
+        }
 
         #endregion Display Values
 
@@ -34,193 +41,136 @@ namespace IkemenToolbox.Models
 
         #endregion .def
 
+        #region .cns
+
         [ObservableProperty]
         private Dictionary<string, string> _remaps = new();
 
         [ObservableProperty]
-        private Dictionary<string, int> _defaults = new();
+        private Dictionary<string, string> _defaults = new();
 
-        [ObservableProperty]
-        private ObservableCollection<InputCommand> _commands = new();
+        public ObservableCollection<CommandDefinition> CommandDefinitions { get; } = new();
 
-        [ObservableProperty]
-        private ObservableCollection<StateDefinition> _stateDefinitions = new();
+        #endregion .cns
 
-        [ObservableProperty]
-        private ObservableCollection<State> _entryStates = new();
+        public ObservableCollection<StateDefinition> StateDefinitions { get; } = new();
 
         private async Task<string> ReadFileAsync(string key)
         {
-            if (Files.ContainsKey(key))
+            if (!Files.ContainsKey(key))
             {
-                return await File.ReadAllTextAsync(FolderPath + Files[key]);
+                throw new InvalidDataException("No file under the alias: " + key);
             }
 
-            return null;
+            return await File.ReadAllTextAsync(FolderPath + Files[key]);
         }
 
-        private string[] SplitData(string data)
+        private static string[] SplitData(string data)
         {
-            var split = data.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            // Remove empty lines
+            var split = data.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-            // Remove comments
-            for (var i = 0; i < split.Length; i++)
+            for (var i = split.Count - 1; i >= 0; i--)
             {
+                // Remove comments
+                if (split[i].StartsWith(';'))
+                {
+                    split.RemoveAt(i);
+                    continue;
+                }
+
+                // Remove inline comments
                 var index = split[i].IndexOf(';');
                 if (index != -1)
                 {
-                    split[i] = split[i].Substring(0, index);
+                    split[i] = split[i][..index];
                 }
+
+                split[i].Trim();
             }
 
-            return split;
+            return split.ToArray();
         }
 
         internal async Task InitializeAsync(string definitionPath)
         {
             DefinitionPath = definitionPath;
             FolderPath = Path.GetDirectoryName(definitionPath) + "/";
-            ParseDef(await File.ReadAllTextAsync(definitionPath));
+            Parse(await File.ReadAllTextAsync(definitionPath));
             await Task.WhenAll(
-                PopulateCommandsAsync(),
-                PopulateConstantsAsync()
+                ParseFileAsync("cmd"),
+                ParseFileAsync("cns")
             );
 
             RaiseDisplayPropertiesChanged();
         }
 
-        private void RaiseDisplayPropertiesChanged()
+        private async Task ParseFileAsync(string fileName, params SectionType[] ignoredSections) => Parse(await ReadFileAsync(fileName), ignoredSections);
+        private void Parse(string data, params SectionType[] ignoredSections)
         {
-            OnPropertyChanged(nameof(DisplayName));
-        }
-
-        private void ParseDef(string data)
-        {
-            foreach (var line in SplitData(data))
-            {
-                if (line.StartsWith(";") || line.StartsWith("["))
-                {
-                    continue;
-                }
-
-                var keyValue = line.Split('=');
-
-                if (keyValue.Length != 2)
-                {
-                    continue;
-                }
-
-                var key = keyValue[0].Trim();
-                var value = keyValue[1].Trim();
-
-                switch (key)
-                {
-                    case "name":
-                    case "displayname":
-                    case "versiondate":
-                    case "mugenversion":
-                    case "author":
-                    case "pal.defaults":
-                    case "localCoord":
-                        Info.Add(key, value);
-                        break;
-
-                    case "sprite":
-                    case "anim":
-                    case "sound":
-                    case "cmd":
-                    case "cns":
-                    case "stcommon":
-                    case "st":
-                    case "st0":
-                    case "st1":
-                    case "st2":
-                    case "st3":
-                    case "st4":
-                    case "st5":
-                    case "st6":
-                    case "st7":
-                    case "st8":
-                    case "st9":
-                        Files.Add(key, value);
-                        break;
-                }
-            }
-        }
-
-        private async Task PopulateConstantsAsync()
-        {
-            var data = await ReadFileAsync("cns");
             var dataArray = SplitData(data);
-
-            Section currentSection = null;
-            for (var i = 0; i < dataArray.Length; i++)
-            {
-                var line = dataArray[i].Trim();
-
-                if (line.TryGetSection(out var section))
-                {
-                    currentSection = section;
-                    continue;
-                }
-
-                var keyValue = line.Split('=');
-
-                if (keyValue.Length < 2)
-                {
-                    continue;
-                }
-
-                var key = keyValue[0].Trim();
-                var value = keyValue[1].Trim();
-
-                switch (currentSection.Type)
-                {
-                    case SectionType.Remap:
-                        Remaps.Add(key, value);
-                        break;
-
-                    case SectionType.Defaults:
-                        Defaults.Add(key, int.Parse(value));
-                        break;
-
-                    case SectionType.State:
-                        if (int.TryParse(key, out var id))
-                        {
-                            AddState(id, currentSection.Name, new State { Name = key, Value = value });
-                        }
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Parse the cmd file and populate the commands and entry states (Statedef -1).
-        /// </summary>
-        /// <returns></returns>
-        private async Task PopulateCommandsAsync()
-        {
-            var data = await ReadFileAsync("cmd");
-            var dataArray = SplitData(data);
+            var last = dataArray.Length - 1;
 
             var command = new InputCommand();
-            var entryState = new State();
-            List<KeyValuePair<string, string>> triggers = null;
-            Section currentSection = null;
+            List<InputCommand> commands = null;
+
+            var state = new State();
+            var triggers = new List<KeyValuePair<string, string>>();
+
+            Section section = null;
+            StateDefinition stateDefinition = null;
 
             for (var i = 0; i < dataArray.Length; i++)
             {
-                var line = dataArray[i].Trim();
+                var line = dataArray[i];
 
-                if (line.TryGetSection(out var section))
+                if (line.TryGetKeyValue(out var key, out var value))
                 {
-                    if (currentSection != null)
+                    switch (section.Type)
                     {
-                        switch (currentSection.Type)
+                        case SectionType.Info: Info.Add(key, value); break;
+                        case SectionType.Files: Files.Add(key, value); break;
+                        case SectionType.Remap: Remaps.Add(key, value); break;
+                        case SectionType.Defaults: Defaults.Add(key, value); break;
+
+                        case SectionType.Command:
+                            PropertyHelper.SetValue(command, key, value);
+                            break;
+
+                        case SectionType.State:
+                            if (key.StartsWith("trigger"))
+                            {
+                                triggers.Add(new(key, value));
+                            }
+                            else
+                            {
+                                PropertyHelper.SetValue(state, key, value);
+                            }
+                            break;
+
+                        case SectionType.Statedef:
+                            PropertyHelper.SetValue(stateDefinition, key, value);
+                            break;
+                    }
+                }
+
+                Section nextSection = null;
+                var next = i + 1;
+
+                if (i == 0 && line.TryGetSection(out nextSection))
+                {
+                    section = nextSection;
+                }
+                else if (i == last || dataArray[next].TryGetSection(out nextSection))
+                {
+                    if (section != null)
+                    {
+                        switch (section.Type)
                         {
                             case SectionType.Command:
-                                Commands.Add(command);
-                                command = new InputCommand();
+                                commands ??= new List<InputCommand>();
+                                commands.Add(command);
+                                command = new();
                                 break;
 
                             case SectionType.State:
@@ -228,93 +178,45 @@ namespace IkemenToolbox.Models
                                 {
                                     triggers.GroupBy(x => x.Key)
                                         .ToList()
-                                        .ForEach(group => entryState.Triggers.Add(new Trigger(GetTriggerNum(group.Key), new ObservableCollection<string>(group.Select(trigger => trigger.Value)))));
-                                    triggers = null;
+                                        .ForEach(group => state.Triggers.Add(new Trigger(GetTriggerNum(group.Key), new ObservableCollection<string>(group.Select(trigger => trigger.Value)))));
+                                    triggers = new();
                                 }
 
-                                entryState.Name = section.Name;
-                                EntryStates.Add(entryState);
+                                state.Name = section.Name;
+                                stateDefinition.States.Add(state);
 
-                                entryState = new State();
+                                state = new State();
                                 break;
                         }
                     }
 
-                    currentSection = section;
-                    continue;
-                }
-
-                var keyValue = line.Split('=', 2);
-
-                if (keyValue.Length < 2)
-                {
-                    continue;
-                }
-
-                var key = keyValue[0].Trim();
-                var value = keyValue[1].Trim();
-
-                switch (currentSection.Type)
-                {
-                    case SectionType.Remap:
-                        Remaps.Add(key, value);
-                        break;
-
-                    case SectionType.Defaults:
-                        Defaults.Add(key, int.Parse(value));
-                        break;
-
-                    case SectionType.Command:
-                        switch (key)
-                        {
-                            case "name":
-                                command.Name = value;
-                                break;
-
-                            case "command":
-                                command.Command = value.Split(',');
-                                break;
-
-                            case "time":
-                                command.Time = int.Parse(value);
-                                break;
-                        }
-                        break;
-
-                    case SectionType.State:
-                        switch (key)
-                        {
-                            case "type":
-                                entryState.Type = value;
-                                break;
-
-                            case "value":
-                                entryState.Value = value;
-                                break;
-
-                            default:
-                                triggers ??= new List<KeyValuePair<string, string>>();
-                                if (key.StartsWith("trigger"))
-                                {
-                                    triggers.Add(new KeyValuePair<string, string>(key, value));
-                                }
-                                break;
-                        }
-                        break;
-                }
-
-                if (i == dataArray.Length - 1)
-                {
-                    switch (currentSection.Type)
+                    if (i == last && stateDefinition != null)
                     {
-                        case SectionType.Command:
-                            Commands.Add(command);
-                            break;
-
-                        case SectionType.State:
-                            EntryStates.Add(entryState);
-                            break;
+                        StateDefinitions.Add(stateDefinition);
                     }
+                    else if (nextSection?.Type == SectionType.Statedef)
+                    {
+                        if (stateDefinition != null)
+                        {
+                            StateDefinitions.Add(stateDefinition);
+                        }
+                        stateDefinition = new StateDefinition((int)nextSection.Id, nextSection.Name);
+                    }
+
+                    if (i == last && commands != null)
+                    {
+                        var tempCommands = commands.DistinctBy(x => x.Name).ToList();
+                        foreach (var tempCommand in tempCommands)
+                        {
+                            CommandDefinitions.Add(new CommandDefinition
+                            {
+                                Name = tempCommand.Name.Trim('"'),
+                                Commands = new ObservableCollection<InputCommand>(commands.Where(x => x.Name == tempCommand.Name).ToList()),
+                            });
+                        }
+                    }
+
+                    section = nextSection;
                 }
             }
         }

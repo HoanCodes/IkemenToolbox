@@ -2,7 +2,7 @@
 
 namespace IkemenToolbox.ViewModels
 {
-    public class ViewModelBase : ObservableObject
+    public class ViewModel : ObservableObject
     {
     }
 }

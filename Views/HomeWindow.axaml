@@ -8,7 +8,6 @@
         x:Class="IkemenToolbox.Views.HomeWindow"
         x:DataType="vm:HomeViewModel"
         Background="Transparent"
-        Position="-1900,240"
         Icon="/Assets/avalonia-logo.ico"
         Title="IkemenToolbox" TransparencyLevelHint="AcrylicBlur">
   <Grid VerticalAlignment="Stretch" RowDefinitions="Auto,*" Background="{StaticResource TabHeaderColor}">
@@ -32,11 +31,27 @@
         <TabControl Background="{StaticResource TabContentColor}">
           <TabItem Header="States">
           </TabItem>
-          <TabItem Header="Commands">
-            <ListBox ItemsSource="{Binding FighterManager.Fighter.Commands}" Background="{StaticResource TabContentColor}" Padding="0">
+          <TabItem Header="{Binding FighterManager.Fighter.CommandDefinitions.Count, StringFormat='Commands ({0})'}">
+            <ListBox ItemsSource="{Binding FighterManager.Fighter.CommandDefinitions}" Background="{StaticResource TabContentColor}" Padding="0">
               <ListBox.ItemTemplate>
-                <DataTemplate x:DataType="m:InputCommand">
-                  <TextBlock Text="{Binding Name}" />
+                <DataTemplate x:DataType="m:CommandDefinition">
+					<Border Background="{StaticResource TabContentColor}">
+						<StackPanel>
+                            <TextBlock Text="{Binding Name}" />
+						    <ListBox ItemsSource="{Binding Commands}">
+							    <ListBox.ItemTemplate>
+								    <DataTemplate x:DataType="m:InputCommand">
+									    <Border>
+											<StackPanel>
+										        <TextBox Watermark="Command" Text="{Binding Command}"/>
+										        <TextBox Watermark="Time" Text="{Binding Time}"/>
+											</StackPanel>
+									    </Border>
+								    </DataTemplate>
+							    </ListBox.ItemTemplate>
+						    </ListBox>
+						</StackPanel>
+					</Border>
                 </DataTemplate>
               </ListBox.ItemTemplate>
             </ListBox>
@@ -47,7 +62,7 @@
         <TabControl Padding="0" Background="{StaticResource TabContentColor}" x:Name="StatesTab" VerticalAlignment="Stretch" ItemsSource="{Binding FighterManager.Fighter.StateDefinitions}">
           <TabControl.ItemTemplate>
             <DataTemplate x:DataType="m:StateDefinition">
-              <TextBlock Text="{Binding Name}" />
+              <TextBlock Text="{Binding DisplayName}" />
             </DataTemplate>
           </TabControl.ItemTemplate>
           <TabControl.ContentTemplate>

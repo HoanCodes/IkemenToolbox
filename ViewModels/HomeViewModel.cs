@@ -51,5 +51,11 @@ namespace IkemenToolbox.ViewModels
         {
             IsEditingDefinitionPath = false;
         }
+
+        [RelayCommand]
+        private async Task OpenFolderAsync()
+        {
+            await FileSystem.OpenFolderAsync(FighterManager.Fighter.FolderPath);
+        }
     }
 }

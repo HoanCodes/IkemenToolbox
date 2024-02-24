@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using IkemenToolbox.Models;
 using System.IO;
 using System.Threading.Tasks;
+
 
 namespace IkemenToolbox.Services
 {
@@ -10,7 +12,7 @@ namespace IkemenToolbox.Services
         public static FighterManager Instance;
 
         [ObservableProperty]
-        private Fighter _fighter;
+        private Fighter _fighter = new Fighter();
 
         public FighterManager() => Instance = this;
 
@@ -23,6 +25,24 @@ namespace IkemenToolbox.Services
 
             Fighter = new Fighter();
             await Fighter.InitializeAsync(path);
+        }
+
+        [RelayCommand]
+        private void AddStateFile() => Fighter.StFiles.Add(string.Empty);
+        [RelayCommand]
+        private void AddQuote() => Fighter.Quotes.Add(string.Empty);
+        [RelayCommand]
+        private void AddJapaneseQuote() => Fighter.Ja_Quotes.Add(string.Empty);
+
+        [RelayCommand]
+        private async Task ExportFileAsync(string fileName)
+        {
+            switch (fileName)
+            {
+                case CommonFile.def:
+                    await Fighter.ExportDefinitionAsync();
+                    break;
+            }
         }
     }
 }

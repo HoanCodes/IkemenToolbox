@@ -4,13 +4,13 @@
   <!-- Add Resources Here -->
   <Color x:Key="TabHeaderColor">#252525</Color>
   <Color x:Key="TabContentColor">#303030</Color>
-  <Color x:Key="ContentBorder">#404040</Color>
+  <Color x:Key="ContentBorderColor">#404040</Color>
   <Design.PreviewWith>
     <StackPanel Background="Transparent">
       <Border Background="{StaticResource TabHeaderColor}" Padding="10">
         <StackPanel  Height="40" Orientation="Horizontal" HorizontalAlignment="Right">
           <Button VerticalAlignment="Center">
-            <TextBlock Text="Hello" />
+            <TextBlock Text="Hello"/>
           </Button>
         </StackPanel>
       </Border>
@@ -19,9 +19,9 @@
           <TabControl Background="{StaticResource TabContentColor}" Padding="0">
             <TabItem Header="Normals">
 				<StackPanel >
-					<Border Padding="10" CornerRadius="10" Margin="10" Background="{StaticResource ContentBorder}">
+					<Border Padding="10" CornerRadius="10" Margin="10" Background="{StaticResource ContentBorderColor}">
 						<StackPanel Spacing="5">
-							<TextBlock Text="Uppercut" Margin="5" FontWeight="Bold" />
+							<TextBlock Text="Uppercut" Margin="5" Classes="Title" />
 							<TextBox Watermark="Command" CornerRadius="10" Background="Transparent" BorderBrush="Transparent" FontWeight="Bold"/>
 							<TextBox Watermark="Time" CornerRadius="10" Background="{StaticResource TabContentColor}"/>
 						</StackPanel>

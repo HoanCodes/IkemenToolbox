@@ -1,7 +1,5 @@
 using Avalonia.Controls;
 using IkemenToolbox.ViewModels;
-using System;
-using System.Collections.Generic;
 
 namespace IkemenToolbox.Views
 {
@@ -13,7 +11,6 @@ namespace IkemenToolbox.Views
         {
             InitializeComponent();
             DataContext = _vm;
-            MainTabControl.SelectedIndex = 2;
         }
     }
 }

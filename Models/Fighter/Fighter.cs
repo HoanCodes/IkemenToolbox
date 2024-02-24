@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace IkemenToolbox.Models
@@ -13,56 +14,165 @@ namespace IkemenToolbox.Models
     public partial class Fighter : ObservableObject
     {
         #region Display Values
-
-        public string DisplayName => Info.TryGetValue("displayname");
         public StateDefinition EntryStateDefinition => StateDefinitions.FirstOrDefault(x => x.Id == -1);
 
         private void RaiseDisplayPropertiesChanged()
         {
-            OnPropertyChanged(nameof(DisplayName));
             OnPropertyChanged(nameof(EntryStateDefinition));
         }
 
         #endregion Display Values
 
-        public string DefinitionPath { get; set; }
+        [ObservableProperty] private string _definitionPath;
         public string FolderPath { get; set; }
 
-        #region .def
+        #region def
 
-        [ObservableProperty]
-        private Dictionary<string, string> _info = new();
+        #region Info
+        [ObservableProperty] private string _name;
+        [ObservableProperty] private string _displayName;
+        [ObservableProperty] private string _versionDate;
+        [ObservableProperty] private string _mugenVersion;
+        [ObservableProperty] private string _author;
+        [ObservableProperty] private string _pal_Defaults;
+        [ObservableProperty] private string _localCoord;
+        #endregion
 
-        [ObservableProperty]
-        private Dictionary<string, string> _files = new();
+        #region Files
+        [ObservableProperty] private string _cmd;
+        [ObservableProperty] private string _cns;
+        [ObservableProperty] private string _stCommon;
+        [ObservableProperty] private string _sprite;
+        [ObservableProperty] private string _anim;
+        [ObservableProperty] private string _sound;
+        [ObservableProperty] private string _ai;
+        [ObservableProperty] private string _moveList;
+        [ObservableProperty] private ObservableCollection<string> _stFiles = new();
+        #endregion
 
-        [ObservableProperty]
-        private Dictionary<string, string> _arcade = new();
+        #region Palette Keymap
+        [ObservableProperty] private string _x;
+        [ObservableProperty] private string _y;
+        [ObservableProperty] private string _z;
+        [ObservableProperty] private string _a;
+        [ObservableProperty] private string _b;
+        [ObservableProperty] private string _c;
+        [ObservableProperty] private string _x2;
+        [ObservableProperty] private string _y2;
+        [ObservableProperty] private string _z2;
+        [ObservableProperty] private string _a2;
+        [ObservableProperty] private string _b2;
+        [ObservableProperty] private string _c2;
+        #endregion
+
+        #region Arcade
+        [ObservableProperty] private string _intro_Storyboard;
+        [ObservableProperty] private string _ending_Storyboard;
+        #endregion
 
         #endregion .def
 
-        #region .cns
+        #region cns
 
-        [ObservableProperty]
-        private Dictionary<string, string> _remaps = new();
+        #region Data
 
-        [ObservableProperty]
-        private Dictionary<string, string> _defaults = new();
+        [ObservableProperty] private int _life;
+        [ObservableProperty] private int _attack;
+        [ObservableProperty] private int _defence;
+        [ObservableProperty] private int _fall_Defence_Up;
+        [ObservableProperty] private int _lieDown_Time;
+        [ObservableProperty] private int _airJuggle;
+        [ObservableProperty] private int _sparkNo;
+        [ObservableProperty] private int _guard_SparkNo;
+        [ObservableProperty] private int _kO_Echo;
+        [ObservableProperty] private int _volume;
+        [ObservableProperty] private int _intPersistIndex;
+        [ObservableProperty] private int _floatPersistIndex;
+        #endregion
 
+        #region Size
+
+        [ObservableProperty] private int _xScale;
+        [ObservableProperty] private int _yScale;
+        [ObservableProperty] private int _ground_Back;
+        [ObservableProperty] private int _ground_Front;
+        [ObservableProperty] private int _air_Back;
+        [ObservableProperty] private int _air_Front;
+        [ObservableProperty] private int _height;
+        [ObservableProperty] private int _attack_Dist;
+        [ObservableProperty] private int _proj_Attack_Dist;
+        [ObservableProperty] private int _proj_DoScale;
+        [ObservableProperty] private string _head_Pos;
+        [ObservableProperty] private string _mid_Pos;
+        [ObservableProperty] private int _shadowOffset;
+        [ObservableProperty] private string _draw_Offset;
+        #endregion
+
+        #region Velocity
+        [ObservableProperty] private string _walk_Fwd;
+        [ObservableProperty] private string _walk_Back;
+        [ObservableProperty] private string _run_Fwd;
+        [ObservableProperty] private string _run_Back;
+        [ObservableProperty] private string _jump_Neu;
+        [ObservableProperty] private string _jump_Back;
+        [ObservableProperty] private string _jump_Fwd;
+        [ObservableProperty] private string _runJump_Back;
+        [ObservableProperty] private string _runJump_Fwd;
+        [ObservableProperty] private string _airJump_Neu;
+        [ObservableProperty] private string _airJump_Back;
+        [ObservableProperty] private string _airJump_Fwd;
+        [ObservableProperty] private string _air_GetHit_GroundRecover;
+        [ObservableProperty] private string _air_GetHit_AirRecover_Mul;
+        [ObservableProperty] private string _air_GetHit_AirRecover_Add;
+        [ObservableProperty] private string _air_GetHit_AirRecover_Back;
+        [ObservableProperty] private string _air_GetHit_AirRecover_Fwd;
+        [ObservableProperty] private string _air_GetHit_AirRecover_Up;
+        [ObservableProperty] private string _air_GetHit_AirRecover_Down;
+        #endregion
+
+        #region Movement
+        [ObservableProperty] private string _airJump_Num;
+        [ObservableProperty] private string _airJump_Height;
+        [ObservableProperty] private string _yAccel;
+        [ObservableProperty] private string _stand_Friction;
+        [ObservableProperty] private string _crouch_Friction;
+        [ObservableProperty] private string _stand_Friction_Threshold;
+        [ObservableProperty] private string _crouch_Friction_Threshold;
+        [ObservableProperty] private string _air_GetHit_GroundLevel;
+        [ObservableProperty] private string _air_GetHit_GroundRecover_Ground_Threshold;
+        [ObservableProperty] private string _air_GetHit_GroundRecover_GroundLevel;
+        [ObservableProperty] private string _air_GetHit_AirRecover_Threshold;
+        [ObservableProperty] private string _air_GetHit_AirRecover_YAccel;
+        [ObservableProperty] private string _air_GetHit_Trip_GroundLevel;
+        [ObservableProperty] private string _down_Bounce_Offset;
+        [ObservableProperty] private string _down_Bounce_YAccel;
+        [ObservableProperty] private string _down_Bounce_GroundLevel;
+        [ObservableProperty] private string _down_Friction_Threshold;
+        #endregion
+
+        public ObservableCollection<string> Quotes { get; set; } = new();
+        public ObservableCollection<string> Ja_Quotes { get; set; } = new();
+
+        #endregion
+
+        #region cmd
+        public ObservableCollection<StringStringKeyValue> Defaults { get; set; } = new();
+        public ObservableCollection<StringStringKeyValue> Remaps { get; set; } = new();
         public ObservableCollection<CommandDefinition> CommandDefinitions { get; } = new();
-
-        #endregion .cns
+        #endregion
 
         public ObservableCollection<StateDefinition> StateDefinitions { get; } = new();
 
-        private async Task<string> ReadFileAsync(string key)
+        private async Task<string> ReadFileAsync(string shortFilePath)
         {
-            if (!Files.ContainsKey(key))
+            var filePath = FolderPath + shortFilePath;
+
+            if (!File.Exists(filePath))
             {
-                throw new InvalidDataException("No file under the alias: " + key);
+                throw new InvalidDataException("No file exists at " + filePath);
             }
 
-            return await File.ReadAllTextAsync(FolderPath + Files[key]);
+            return await File.ReadAllTextAsync(filePath);
         }
 
         private static string[] SplitData(string data)
@@ -95,18 +205,18 @@ namespace IkemenToolbox.Models
         internal async Task InitializeAsync(string definitionPath)
         {
             DefinitionPath = definitionPath;
-            FolderPath = Path.GetDirectoryName(definitionPath) + "/";
+            FolderPath = Path.GetDirectoryName(definitionPath) + "\\";
             Parse(await File.ReadAllTextAsync(definitionPath));
             await Task.WhenAll(
-                ParseFileAsync("cmd"),
-                ParseFileAsync("cns")
+                ParseFileAsync(Cmd),
+                ParseFileAsync(Cns)
             );
 
             RaiseDisplayPropertiesChanged();
         }
 
-        private async Task ParseFileAsync(string fileName, params SectionType[] ignoredSections) => Parse(await ReadFileAsync(fileName), ignoredSections);
-        private void Parse(string data, params SectionType[] ignoredSections)
+        private async Task ParseFileAsync(string shortFilePath, params string[] ignoredSections) => Parse(await ReadFileAsync(shortFilePath), ignoredSections);
+        private void Parse(string data, params string[] ignoredSections)
         {
             var dataArray = SplitData(data);
             var last = dataArray.Length - 1;
@@ -128,15 +238,30 @@ namespace IkemenToolbox.Models
                 {
                     switch (section.Type)
                     {
-                        case SectionType.Info: Info.Add(key, value); break;
-                        case SectionType.Files: Files.Add(key, value); break;
-                        case SectionType.Remap: Remaps.Add(key, value); break;
-                        case SectionType.Defaults: Defaults.Add(key, value); break;
-
+                        case SectionType.Info:
+                        case SectionType.Arcade:
+                        case SectionType.Palette_Keymap:
+                        case SectionType.Data:
+                        case SectionType.Size:
+                        case SectionType.Velocity:
+                        case SectionType.Movement:
+                            PropertyHelper.SetValue(this, key, value);
+                            break;
+                        case SectionType.Files:
+                            if (key.StartsWith("st") && key.Length <= 4)
+                            {
+                                StFiles.Add(value);
+                                continue;
+                            }
+                            PropertyHelper.SetValue(this, key, value);
+                            break;
+                        case SectionType.Remap: Remaps.Add(new StringStringKeyValue(key, value)); break;
+                        case SectionType.Defaults: Defaults.Add(new StringStringKeyValue(key, value)); break;
+                        case SectionType.Quotes: Quotes.Add(value); break;
+                        case SectionType.Ja_Quotes: Ja_Quotes.Add(value); break;
                         case SectionType.Command:
                             PropertyHelper.SetValue(command, key, value);
                             break;
-
                         case SectionType.State:
                             if (key.StartsWith("trigger"))
                             {
@@ -147,7 +272,6 @@ namespace IkemenToolbox.Models
                                 PropertyHelper.SetValue(state, key, value);
                             }
                             break;
-
                         case SectionType.Statedef:
                             PropertyHelper.SetValue(stateDefinition, key, value);
                             break;
@@ -156,6 +280,7 @@ namespace IkemenToolbox.Models
 
                 Section nextSection = null;
                 var next = i + 1;
+                var onLastLine = i == last;
 
                 if (i == 0 && line.TryGetSection(out nextSection))
                 {
@@ -242,6 +367,74 @@ namespace IkemenToolbox.Models
             }
 
             return 0;
+        }
+
+        public async Task ExportDefinitionAsync()
+        {
+            var fileName = DefinitionPath.Split('\\').Last();
+            var builder = new StringBuilder();
+
+            builder.AppendSection(SectionType.Info);
+            builder.AppendKeyValue("name", Name, true);
+            builder.AppendKeyValue("displayname", DisplayName, true);
+            builder.AppendKeyValue("versiondate", VersionDate);
+            builder.AppendKeyValue("mugenversion", MugenVersion);
+            builder.AppendKeyValue("author", Author, true);
+            builder.AppendKeyValue("pal.defaults", Pal_Defaults);
+            builder.AppendKeyValue("localcoord", LocalCoord);
+            builder.AppendLine();
+
+            builder.AppendSection(SectionType.Files);
+            builder.AppendKeyValue(CommonFile.cmd, Cmd);
+            builder.AppendKeyValue(CommonFile.cns, Cns);
+            builder.AppendKeyValue(CommonFile.sprite, Sprite);
+            builder.AppendKeyValue(CommonFile.anim, Anim);
+            builder.AppendKeyValue(CommonFile.sound, Sound);
+            builder.AppendKeyValue(CommonFile.ai, Ai);
+            builder.AppendKeyValue(CommonFile.movelist, MoveList);
+            builder.AppendKeyValue(CommonFile.stcommon, StCommon);
+            for (var i = 0; i < StFiles.Count; i++)
+            {
+                builder.AppendKeyValue("st" + i, StFiles[i]);
+            }
+            builder.AppendLine();
+
+            builder.AppendSection(SectionType.Palette_Keymap);
+            builder.AppendKeyValue("x", X);
+            builder.AppendKeyValue("y", Y);
+            builder.AppendKeyValue("z", Z);
+            builder.AppendKeyValue("a", A);
+            builder.AppendKeyValue("b", B);
+            builder.AppendKeyValue("c", C);
+            builder.AppendKeyValue("x2", X2);
+            builder.AppendKeyValue("y2", Y2);
+            builder.AppendKeyValue("z2", Z2);
+            builder.AppendKeyValue("a2", A2);
+            builder.AppendKeyValue("b2", B2);
+            builder.AppendKeyValue("c2", C2);
+            builder.AppendLine();
+
+            builder.AppendSection(SectionType.Arcade);
+            builder.AppendKeyValue("intro.storyboard", Intro_Storyboard);
+            builder.AppendKeyValue("ending.storyboard", Ending_Storyboard);
+
+            await ExportFileAsync(fileName, builder.ToString());
+        }
+
+        private async Task ExportFileAsync(string name, string data)
+        {
+            var filePath = FolderPath + name;
+
+#if DEBUG
+            var samplePath = FolderPath + "IkemenToolbox_Sample\\";
+            if (!Directory.Exists(samplePath))
+            {
+                Directory.CreateDirectory(samplePath);
+            }
+            filePath = samplePath + name;
+#endif
+
+            await File.WriteAllTextAsync(filePath, data);
         }
     }
 }

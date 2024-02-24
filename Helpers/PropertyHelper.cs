@@ -10,16 +10,18 @@ namespace IkemenToolbox.Helpers
         static readonly Type IntType = typeof(int);
         static readonly Type BoolType = typeof(bool);
 
-        static readonly Type StateType = typeof(State);
-        static readonly Type StateDefinitionType = typeof(StateDefinition);
-
-        static readonly PropertyInfo[] StateProperties = typeof(State).GetProperties();
-        static readonly PropertyInfo[] StateDefinitionProperties = typeof(StateDefinition).GetProperties();
-
         public static void SetValue<T>(T obj, string propertyName, object value)
         {
+            propertyName = propertyName.Replace('.', '_');
+
             var property = GetProperties(obj).FirstOrDefault(x => x.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase));
-            var propertyType = property?.PropertyType;
+
+            if (property == null)
+            {
+                return;
+            }
+
+            var propertyType = property.PropertyType;
 
             if (propertyType == IntType)
             {
@@ -31,18 +33,35 @@ namespace IkemenToolbox.Helpers
             }
             else
             {
-                property?.SetValue(obj, value);
+                var stringValue = value.ToString();
+                if (stringValue.StartsWith('"'))
+                {
+                    property?.SetValue(obj, stringValue.Trim('"'));
+                }
+                else
+                {
+                    property?.SetValue(obj, value);
+                }
             }
         }
 
+        // This is 100% over-optimizing but I was on a plane and was bored
+        static readonly PropertyInfo[] FighterProperties = typeof(Fighter).GetProperties();
+        static readonly PropertyInfo[] StateProperties = typeof(State).GetProperties();
+        static readonly PropertyInfo[] StateDefinitionProperties = typeof(StateDefinition).GetProperties();
         private static PropertyInfo[] GetProperties<T>(T obj)
         {
             var type = typeof(T);
-            if (type == StateType)
+
+            if (type == typeof(Fighter))
+            {
+                return FighterProperties;
+            }
+            else if (type == typeof(State))
             {
                 return StateProperties;
             }
-            else if (type == StateDefinitionType)
+            else if (type == typeof(StateDefinition))
             {
                 return StateDefinitionProperties;
             }

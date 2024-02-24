@@ -1,5 +1,6 @@
 ﻿using IkemenToolbox.Models;
 using System;
+using System.Linq;
 
 namespace IkemenToolbox.Extensions
 {
@@ -26,21 +27,45 @@ namespace IkemenToolbox.Extensions
             }
 
             int? id = null;
-            var idSplit = nameSplit[0].Split(' ', 2);
-            if (!Enum.TryParse(typeof(SectionType), idSplit[0], true, out var type))
+            var type = string.Empty;
+            var idSplit = nameSplit[0].Split(' ');
+            if (idSplit.Length > 1)
             {
-                return false;
+                if (int.TryParse(idSplit[^1], out int result))
+                {
+                    id = result;
+
+                    for (var i = 0; i < idSplit.Length - 1; i++)
+                    {
+                        type += idSplit[i] + ".";
+                    }
+                }
+                else
+                {
+                    for (var i = 0; i < idSplit.Length; i++)
+                    {
+                        type += idSplit[i] + ".";
+                    }
+                }
+                type = type.Trim('.');
             }
-            if (idSplit.Length == 2 && int.TryParse(idSplit[1], out int result))
+            else
             {
-                id = result;
+                type = idSplit[0];
+            }
+
+            type = type.Replace('.', '_');
+
+            if (!char.IsUpper(type[0]))
+            {
+                type = char.ToUpper(type[0]) + type[1..];
             }
 
             section = new Section
             {
                 Id = id,
                 Name = name,
-                Type = (SectionType)type,
+                Type = type,
             };
 
             return true;

@@ -1,0 +1,440 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using IkemenToolbox.Extensions;
+using IkemenToolbox.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace IkemenToolbox.Models
+{
+    public partial class Fighter : ObservableObject
+    {
+        #region Display Values
+        public StateDefinition EntryStateDefinition => StateDefinitions.FirstOrDefault(x => x.Id == -1);
+
+        private void RaiseDisplayPropertiesChanged()
+        {
+            OnPropertyChanged(nameof(EntryStateDefinition));
+        }
+
+        #endregion Display Values
+
+        [ObservableProperty] private string _definitionPath;
+        public string FolderPath { get; set; }
+
+        #region def
+
+        #region Info
+        [ObservableProperty] private string _name;
+        [ObservableProperty] private string _displayName;
+        [ObservableProperty] private string _versionDate;
+        [ObservableProperty] private string _mugenVersion;
+        [ObservableProperty] private string _author;
+        [ObservableProperty] private string _pal_Defaults;
+        [ObservableProperty] private string _localCoord;
+        #endregion
+
+        #region Files
+        [ObservableProperty] private string _cmd;
+        [ObservableProperty] private string _cns;
+        [ObservableProperty] private string _stCommon;
+        [ObservableProperty] private string _sprite;
+        [ObservableProperty] private string _anim;
+        [ObservableProperty] private string _sound;
+        [ObservableProperty] private string _ai;
+        [ObservableProperty] private string _moveList;
+        [ObservableProperty] private ObservableCollection<string> _stFiles = new();
+        #endregion
+
+        #region Palette Keymap
+        [ObservableProperty] private string _x;
+        [ObservableProperty] private string _y;
+        [ObservableProperty] private string _z;
+        [ObservableProperty] private string _a;
+        [ObservableProperty] private string _b;
+        [ObservableProperty] private string _c;
+        [ObservableProperty] private string _x2;
+        [ObservableProperty] private string _y2;
+        [ObservableProperty] private string _z2;
+        [ObservableProperty] private string _a2;
+        [ObservableProperty] private string _b2;
+        [ObservableProperty] private string _c2;
+        #endregion
+
+        #region Arcade
+        [ObservableProperty] private string _intro_Storyboard;
+        [ObservableProperty] private string _ending_Storyboard;
+        #endregion
+
+        #endregion .def
+
+        #region cns
+
+        #region Data
+
+        [ObservableProperty] private int _life;
+        [ObservableProperty] private int _attack;
+        [ObservableProperty] private int _defence;
+        [ObservableProperty] private int _fall_Defence_Up;
+        [ObservableProperty] private int _lieDown_Time;
+        [ObservableProperty] private int _airJuggle;
+        [ObservableProperty] private int _sparkNo;
+        [ObservableProperty] private int _guard_SparkNo;
+        [ObservableProperty] private int _kO_Echo;
+        [ObservableProperty] private int _volume;
+        [ObservableProperty] private int _intPersistIndex;
+        [ObservableProperty] private int _floatPersistIndex;
+        #endregion
+
+        #region Size
+
+        [ObservableProperty] private int _xScale;
+        [ObservableProperty] private int _yScale;
+        [ObservableProperty] private int _ground_Back;
+        [ObservableProperty] private int _ground_Front;
+        [ObservableProperty] private int _air_Back;
+        [ObservableProperty] private int _air_Front;
+        [ObservableProperty] private int _height;
+        [ObservableProperty] private int _attack_Dist;
+        [ObservableProperty] private int _proj_Attack_Dist;
+        [ObservableProperty] private int _proj_DoScale;
+        [ObservableProperty] private string _head_Pos;
+        [ObservableProperty] private string _mid_Pos;
+        [ObservableProperty] private int _shadowOffset;
+        [ObservableProperty] private string _draw_Offset;
+        #endregion
+
+        #region Velocity
+        [ObservableProperty] private string _walk_Fwd;
+        [ObservableProperty] private string _walk_Back;
+        [ObservableProperty] private string _run_Fwd;
+        [ObservableProperty] private string _run_Back;
+        [ObservableProperty] private string _jump_Neu;
+        [ObservableProperty] private string _jump_Back;
+        [ObservableProperty] private string _jump_Fwd;
+        [ObservableProperty] private string _runJump_Back;
+        [ObservableProperty] private string _runJump_Fwd;
+        [ObservableProperty] private string _airJump_Neu;
+        [ObservableProperty] private string _airJump_Back;
+        [ObservableProperty] private string _airJump_Fwd;
+        [ObservableProperty] private string _air_GetHit_GroundRecover;
+        [ObservableProperty] private string _air_GetHit_AirRecover_Mul;
+        [ObservableProperty] private string _air_GetHit_AirRecover_Add;
+        [ObservableProperty] private string _air_GetHit_AirRecover_Back;
+        [ObservableProperty] private string _air_GetHit_AirRecover_Fwd;
+        [ObservableProperty] private string _air_GetHit_AirRecover_Up;
+        [ObservableProperty] private string _air_GetHit_AirRecover_Down;
+        #endregion
+
+        #region Movement
+        [ObservableProperty] private string _airJump_Num;
+        [ObservableProperty] private string _airJump_Height;
+        [ObservableProperty] private string _yAccel;
+        [ObservableProperty] private string _stand_Friction;
+        [ObservableProperty] private string _crouch_Friction;
+        [ObservableProperty] private string _stand_Friction_Threshold;
+        [ObservableProperty] private string _crouch_Friction_Threshold;
+        [ObservableProperty] private string _air_GetHit_GroundLevel;
+        [ObservableProperty] private string _air_GetHit_GroundRecover_Ground_Threshold;
+        [ObservableProperty] private string _air_GetHit_GroundRecover_GroundLevel;
+        [ObservableProperty] private string _air_GetHit_AirRecover_Threshold;
+        [ObservableProperty] private string _air_GetHit_AirRecover_YAccel;
+        [ObservableProperty] private string _air_GetHit_Trip_GroundLevel;
+        [ObservableProperty] private string _down_Bounce_Offset;
+        [ObservableProperty] private string _down_Bounce_YAccel;
+        [ObservableProperty] private string _down_Bounce_GroundLevel;
+        [ObservableProperty] private string _down_Friction_Threshold;
+        #endregion
+
+        public ObservableCollection<string> Quotes { get; set; } = new();
+        public ObservableCollection<string> Ja_Quotes { get; set; } = new();
+
+        #endregion
+
+        #region cmd
+        public ObservableCollection<StringStringKeyValue> Defaults { get; set; } = new();
+        public ObservableCollection<StringStringKeyValue> Remaps { get; set; } = new();
+        public ObservableCollection<CommandDefinition> CommandDefinitions { get; } = new();
+        #endregion
+
+        public ObservableCollection<StateDefinition> StateDefinitions { get; } = new();
+
+        private async Task<string> ReadFileAsync(string shortFilePath)
+        {
+            var filePath = FolderPath + shortFilePath;
+
+            if (!File.Exists(filePath))
+            {
+                throw new InvalidDataException("No file exists at " + filePath);
+            }
+
+            return await File.ReadAllTextAsync(filePath);
+        }
+
+        private static string[] SplitData(string data)
+        {
+            // Remove empty lines
+            var split = data.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+            for (var i = split.Count - 1; i >= 0; i--)
+            {
+                // Remove comments
+                if (split[i].StartsWith(';'))
+                {
+                    split.RemoveAt(i);
+                    continue;
+                }
+
+                // Remove inline comments
+                var index = split[i].IndexOf(';');
+                if (index != -1)
+                {
+                    split[i] = split[i][..index];
+                }
+
+                split[i].Trim();
+            }
+
+            return split.ToArray();
+        }
+
+        internal async Task InitializeAsync(string definitionPath)
+        {
+            DefinitionPath = definitionPath;
+            FolderPath = Path.GetDirectoryName(definitionPath) + "\\";
+            Parse(await File.ReadAllTextAsync(definitionPath));
+            await Task.WhenAll(
+                ParseFileAsync(Cmd),
+                ParseFileAsync(Cns)
+            );
+
+            RaiseDisplayPropertiesChanged();
+        }
+
+        private async Task ParseFileAsync(string shortFilePath, params string[] ignoredSections) => Parse(await ReadFileAsync(shortFilePath), ignoredSections);
+        private void Parse(string data, params string[] ignoredSections)
+        {
+            var dataArray = SplitData(data);
+            var last = dataArray.Length - 1;
+
+            var command = new InputCommand();
+            List<InputCommand> commands = null;
+
+            var state = new State();
+            var triggers = new List<KeyValuePair<string, string>>();
+
+            Section section = null;
+            StateDefinition stateDefinition = null;
+
+            for (var i = 0; i < dataArray.Length; i++)
+            {
+                var line = dataArray[i];
+
+                if (line.TryGetKeyValue(out var key, out var value))
+                {
+                    switch (section.Type)
+                    {
+                        case SectionType.Info:
+                        case SectionType.Arcade:
+                        case SectionType.Palette_Keymap:
+                        case SectionType.Data:
+                        case SectionType.Size:
+                        case SectionType.Velocity:
+                        case SectionType.Movement:
+                            PropertyHelper.SetValue(this, key, value);
+                            break;
+                        case SectionType.Files:
+                            if (key.StartsWith("st") && key.Length <= 4)
+                            {
+                                StFiles.Add(value);
+                                continue;
+                            }
+                            PropertyHelper.SetValue(this, key, value);
+                            break;
+                        case SectionType.Remap: Remaps.Add(new StringStringKeyValue(key, value)); break;
+                        case SectionType.Defaults: Defaults.Add(new StringStringKeyValue(key, value)); break;
+                        case SectionType.Quotes: Quotes.Add(value); break;
+                        case SectionType.Ja_Quotes: Ja_Quotes.Add(value); break;
+                        case SectionType.Command:
+                            PropertyHelper.SetValue(command, key, value);
+                            break;
+                        case SectionType.State:
+                            if (key.StartsWith("trigger"))
+                            {
+                                triggers.Add(new(key, value));
+                            }
+                            else
+                            {
+                                PropertyHelper.SetValue(state, key, value);
+                            }
+                            break;
+                        case SectionType.Statedef:
+                            PropertyHelper.SetValue(stateDefinition, key, value);
+                            break;
+                    }
+                }
+
+                Section nextSection = null;
+                var next = i + 1;
+                var onLastLine = i == last;
+
+                if (i == 0 && line.TryGetSection(out nextSection))
+                {
+                    section = nextSection;
+                }
+                else if (i == last || dataArray[next].TryGetSection(out nextSection))
+                {
+                    if (section != null)
+                    {
+                        switch (section.Type)
+                        {
+                            case SectionType.Command:
+                                commands ??= new List<InputCommand>();
+                                commands.Add(command);
+                                command = new();
+                                break;
+
+                            case SectionType.State:
+                                if (triggers != null)
+                                {
+                                    triggers.GroupBy(x => x.Key)
+                                        .ToList()
+                                        .ForEach(group => state.Triggers.Add(new Trigger(GetTriggerNum(group.Key), new ObservableCollection<string>(group.Select(trigger => trigger.Value)))));
+                                    triggers = new();
+                                }
+
+                                state.Name = section.Name;
+                                stateDefinition.States.Add(state);
+
+                                state = new State();
+                                break;
+                        }
+                    }
+
+                    if (i == last && stateDefinition != null)
+                    {
+                        StateDefinitions.Add(stateDefinition);
+                    }
+                    else if (nextSection?.Type == SectionType.Statedef)
+                    {
+                        if (stateDefinition != null)
+                        {
+                            StateDefinitions.Add(stateDefinition);
+                        }
+                        stateDefinition = new StateDefinition((int)nextSection.Id, nextSection.Name);
+                    }
+
+                    if (i == last && commands != null)
+                    {
+                        var tempCommands = commands.DistinctBy(x => x.Name).ToList();
+                        foreach (var tempCommand in tempCommands)
+                        {
+                            CommandDefinitions.Add(new CommandDefinition
+                            {
+                                Name = tempCommand.Name.Trim('"'),
+                                Commands = new ObservableCollection<InputCommand>(commands.Where(x => x.Name == tempCommand.Name).ToList()),
+                            });
+                        }
+                    }
+
+                    section = nextSection;
+                }
+            }
+        }
+
+        private void AddState(int id, string name, State state)
+        {
+            var collection = StateDefinitions.FirstOrDefault(x => x.Name == name);
+            if (collection == null)
+            {
+                collection = new StateDefinition(id, name);
+                StateDefinitions.Add(collection);
+            }
+            collection.States.Add(state);
+        }
+
+        private static int GetTriggerNum(string key)
+        {
+            key = key.Replace("trigger", "");
+
+            if (int.TryParse(key, out var num))
+            {
+                return num;
+            }
+
+            return 0;
+        }
+
+        public async Task ExportDefinitionAsync()
+        {
+            var fileName = DefinitionPath.Split('\\').Last();
+            var builder = new StringBuilder();
+
+            builder.AppendSection(SectionType.Info);
+            builder.AppendKeyValue("name", Name, true);
+            builder.AppendKeyValue("displayname", DisplayName, true);
+            builder.AppendKeyValue("versiondate", VersionDate);
+            builder.AppendKeyValue("mugenversion", MugenVersion);
+            builder.AppendKeyValue("author", Author, true);
+            builder.AppendKeyValue("pal.defaults", Pal_Defaults);
+            builder.AppendKeyValue("localcoord", LocalCoord);
+            builder.AppendLine();
+
+            builder.AppendSection(SectionType.Files);
+            builder.AppendKeyValue(CommonFile.cmd, Cmd);
+            builder.AppendKeyValue(CommonFile.cns, Cns);
+            builder.AppendKeyValue(CommonFile.sprite, Sprite);
+            builder.AppendKeyValue(CommonFile.anim, Anim);
+            builder.AppendKeyValue(CommonFile.sound, Sound);
+            builder.AppendKeyValue(CommonFile.ai, Ai);
+            builder.AppendKeyValue(CommonFile.movelist, MoveList);
+            builder.AppendKeyValue(CommonFile.stcommon, StCommon);
+            for (var i = 0; i < StFiles.Count; i++)
+            {
+                builder.AppendKeyValue("st" + i, StFiles[i]);
+            }
+            builder.AppendLine();
+
+            builder.AppendSection(SectionType.Palette_Keymap);
+            builder.AppendKeyValue("x", X);
+            builder.AppendKeyValue("y", Y);
+            builder.AppendKeyValue("z", Z);
+            builder.AppendKeyValue("a", A);
+            builder.AppendKeyValue("b", B);
+            builder.AppendKeyValue("c", C);
+            builder.AppendKeyValue("x2", X2);
+            builder.AppendKeyValue("y2", Y2);
+            builder.AppendKeyValue("z2", Z2);
+            builder.AppendKeyValue("a2", A2);
+            builder.AppendKeyValue("b2", B2);
+            builder.AppendKeyValue("c2", C2);
+            builder.AppendLine();
+
+            builder.AppendSection(SectionType.Arcade);
+            builder.AppendKeyValue("intro.storyboard", Intro_Storyboard);
+            builder.AppendKeyValue("ending.storyboard", Ending_Storyboard);
+
+            await ExportFileAsync(fileName, builder.ToString());
+        }
+
+        private async Task ExportFileAsync(string name, string data)
+        {
+            var filePath = FolderPath + name;
+
+#if DEBUG
+            var samplePath = FolderPath + "IkemenToolbox_Sample\\";
+            if (!Directory.Exists(samplePath))
+            {
+                Directory.CreateDirectory(samplePath);
+            }
+            filePath = samplePath + name;
+#endif
+
+            await File.WriteAllTextAsync(filePath, data);
+        }
+    }
+}

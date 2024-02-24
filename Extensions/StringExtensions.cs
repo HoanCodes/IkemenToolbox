@@ -1,0 +1,91 @@
+﻿using IkemenToolbox.Models;
+using System;
+using System.Linq;
+
+namespace IkemenToolbox.Extensions
+{
+    public static class StringExtensions
+    {
+        public static bool IsSection(this string value) => value.StartsWith("[");
+
+        public static bool TryGetSection(this string value, out Section section)
+        {
+            section = null;
+
+            if (!value.IsSection())
+            {
+                return false;
+            }
+
+            value = value[1..^1];   //Remove brackets
+
+            var name = string.Empty;
+            var nameSplit = value.Split(',', 2);
+            if (nameSplit.Length == 2)
+            {
+                name = nameSplit[1].Trim();
+            }
+
+            int? id = null;
+            var type = string.Empty;
+            var idSplit = nameSplit[0].Split(' ');
+            if (idSplit.Length > 1)
+            {
+                if (int.TryParse(idSplit[^1], out int result))
+                {
+                    id = result;
+
+                    for (var i = 0; i < idSplit.Length - 1; i++)
+                    {
+                        type += idSplit[i] + ".";
+                    }
+                }
+                else
+                {
+                    for (var i = 0; i < idSplit.Length; i++)
+                    {
+                        type += idSplit[i] + ".";
+                    }
+                }
+                type = type.Trim('.');
+            }
+            else
+            {
+                type = idSplit[0];
+            }
+
+            type = type.Replace('.', '_');
+
+            if (!char.IsUpper(type[0]))
+            {
+                type = char.ToUpper(type[0]) + type[1..];
+            }
+
+            section = new Section
+            {
+                Id = id,
+                Name = name,
+                Type = type,
+            };
+
+            return true;
+        }
+
+        public static bool TryGetKeyValue(this string line, out string key, out string value)
+        {
+            key = null;
+            value = null;
+
+            var split = line.Split('=', 2);
+            if (split.Length != 2)
+            {
+                return false;
+            }
+
+            key = split[0].Trim();
+            value = split[1].Trim();
+
+            return true;
+        }
+    }
+}

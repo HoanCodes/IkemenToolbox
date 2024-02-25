@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:m="using:IkemenToolbox.Models"
+        xmlns:controls="using:IkemenToolbox.Controls"
         xmlns:vm="using:IkemenToolbox.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -9,7 +10,9 @@
         x:DataType="vm:HomeViewModel"
         Background="Transparent"
         Icon="/Assets/avalonia-logo.ico"
-        Title="IkemenToolbox" TransparencyLevelHint="AcrylicBlur">
+        Title="IkemenToolbox"
+        TransparencyLevelHint="AcrylicBlur"
+        Name="window">
   <Grid VerticalAlignment="Stretch" RowDefinitions="Auto,*" Background="{StaticResource TabHeaderColor}">
     <Grid Margin="10">
       <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
@@ -23,49 +26,49 @@
         <TextBox Text="{Binding DefinitionPath}" Watermark="Fighter Definition Path" HorizontalAlignment="Stretch" DockPanel.Dock="Left" />
       </DockPanel>
     </Grid>
-    <TabControl x:Name="MainTabControl" TabStripPlacement="Left" Background="{StaticResource TabHeaderColor}" Grid.Row="1">
+    <TabControl x:Name="MainTabControl" TabStripPlacement="Left" Background="{StaticResource TabHeaderColor}" Grid.Row="1" DataContext="{Binding FighterManager.Fighter}">
       <TabItem Header="Definition">
         <ScrollViewer>
           <StackPanel>
             <TextBlock Text="Info" Classes="Title"/>
             <Grid ColumnDefinitions="*, *, *, *">
-              <TextBox Watermark="Name" Text="{Binding FighterManager.Fighter.Name}"/>
-              <TextBox Watermark="Display Name" Text="{Binding FighterManager.Fighter.DisplayName}" Grid.Column="1"/>
-              <TextBox Watermark="Author" Text="{Binding FighterManager.Fighter.Author}" Grid.Column="2" Grid.ColumnSpan="2"/>
+              <controls:AdvancedTextBox TextBinding="{Binding Name}"/>
+              <controls:AdvancedTextBox TextBinding="{Binding DisplayName}" Grid.Column="1"/>
+              <controls:AdvancedTextBox TextBinding="{Binding Author}" Grid.Column="2" Grid.ColumnSpan="2"/>
             </Grid>
             <Grid ColumnDefinitions="*, *, *, *">
-              <TextBox Watermark="Version Date" Text="{Binding FighterManager.Fighter.VersionDate}" />
-              <TextBox Watermark="Mugen Version" Text="{Binding FighterManager.Fighter.MugenVersion}" Grid.Column="1"/>
-              <TextBox Watermark="Local Coordinates" Text="{Binding FighterManager.Fighter.LocalCoord}" Grid.Column="2"/>
-              <TextBox Watermark="Palette Defaults" Text="{Binding FighterManager.Fighter.Pal_Defaults}" Grid.Column="3"/>
+              <controls:AdvancedTextBox TextBinding="{Binding VersionDate}" />
+              <controls:AdvancedTextBox TextBinding="{Binding MugenVersion}" Grid.Column="1"/>
+              <controls:AdvancedTextBox TextBinding="{Binding LocalCoord}" Grid.Column="2"/>
+              <controls:AdvancedTextBox TextBinding="{Binding Pal_Defaults}" Grid.Column="3"/>
             </Grid>
             <TextBlock Text="Arcade" Classes="Title"/>
             <Grid ColumnDefinitions="*, *">
-              <TextBox Watermark="Intro" Text="{Binding FighterManager.Fighter.Intro_Storyboard}"/>
-              <TextBox Watermark="Ending" Text="{Binding FighterManager.Fighter.Ending_Storyboard}" Grid.Column="1"/>
+              <controls:AdvancedTextBox TextBinding="{Binding Intro_Storyboard}"/>
+              <controls:AdvancedTextBox TextBinding="{Binding Ending_Storyboard}" Grid.Column="1"/>
             </Grid>
             <TextBlock Text="Palette Keymaps" Classes="Title"/>
             <Grid ColumnDefinitions="*, *, *, *, *, *">
-              <TextBox Watermark="x" Text="{Binding FighterManager.Fighter.X}"/>
-              <TextBox Watermark="y" Text="{Binding FighterManager.Fighter.Y}" Grid.Column="1"/>
-              <TextBox Watermark="z" Text="{Binding FighterManager.Fighter.Z}" Grid.Column="2"/>
-              <TextBox Watermark="a" Text="{Binding FighterManager.Fighter.A}" Grid.Column="3"/>
-              <TextBox Watermark="b" Text="{Binding FighterManager.Fighter.B}" Grid.Column="4"/>
-              <TextBox Watermark="c" Text="{Binding FighterManager.Fighter.C}" Grid.Column="5"/>
+              <controls:AdvancedTextBox TextBinding="{Binding X}"/>
+              <controls:AdvancedTextBox TextBinding="{Binding Y}" Grid.Column="1"/>
+              <controls:AdvancedTextBox TextBinding="{Binding Z}" Grid.Column="2"/>
+              <controls:AdvancedTextBox TextBinding="{Binding A}" Grid.Column="3"/>
+              <controls:AdvancedTextBox TextBinding="{Binding B}" Grid.Column="4"/>
+              <controls:AdvancedTextBox TextBinding="{Binding C}" Grid.Column="5"/>
             </Grid>
             <Grid ColumnDefinitions="*, *, *, *, *, *">
-              <TextBox Watermark="x2" Text="{Binding FighterManager.Fighter.X2}"/>
-              <TextBox Watermark="y2" Text="{Binding FighterManager.Fighter.Y2}" Grid.Column="1"/>
-              <TextBox Watermark="z2" Text="{Binding FighterManager.Fighter.Z2}" Grid.Column="2"/>
-              <TextBox Watermark="a2" Text="{Binding FighterManager.Fighter.A2}" Grid.Column="3"/>
-              <TextBox Watermark="b2" Text="{Binding FighterManager.Fighter.B2}" Grid.Column="4"/>
-              <TextBox Watermark="c2" Text="{Binding FighterManager.Fighter.C2}" Grid.Column="5"/>
+              <controls:AdvancedTextBox TextBinding="{Binding X2}"/>
+              <controls:AdvancedTextBox TextBinding="{Binding Y2}" Grid.Column="1"/>
+              <controls:AdvancedTextBox TextBinding="{Binding Z2}" Grid.Column="2"/>
+              <controls:AdvancedTextBox TextBinding="{Binding A2}" Grid.Column="3"/>
+              <controls:AdvancedTextBox TextBinding="{Binding B2}" Grid.Column="4"/>
+              <controls:AdvancedTextBox TextBinding="{Binding C2}" Grid.Column="5"/>
             </Grid>
             <TextBlock Text="Files" Classes="Title"/>
             <Button Content="Regenerate Properties" Height="30" HorizontalAlignment="Center"/>
             <DockPanel LastChildFill="True">
               <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" DockPanel.Dock="Right">
-                <Button Width="100" Content="Export" Command="{Binding FighterManager.ExportFileCommand}" CommandParameter="def"/>
+                <Button Width="100" Content="Export" Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.ExportFileCommand}" CommandParameter="def"/>
                 <Button Width="100" Content="Export"/>
                 <Button Width="100" Content="Export"/>
                 <Button Width="100" Content="Export" IsEnabled="False"/>
@@ -76,18 +79,18 @@
                 <Button Width="100" Content="Export" IsEnabled="False"/>
               </StackPanel>
               <StackPanel>
-                <TextBox Watermark="def" Text="{Binding FighterManager.Fighter.DefinitionPath}" IsEnabled="False"/>
-                <TextBox Watermark="cmd" Text="{Binding FighterManager.Fighter.Cmd}"/>
-                <TextBox Watermark="cns" Text="{Binding FighterManager.Fighter.Cns}"/>
-                <TextBox Watermark="sprite" Text="{Binding FighterManager.Fighter.Sprite}"/>
-                <TextBox Watermark="anim" Text="{Binding FighterManager.Fighter.Anim}"/>
-                <TextBox Watermark="sound" Text="{Binding FighterManager.Fighter.Sound}"/>
-                <TextBox Watermark="ai" Text="{Binding FighterManager.Fighter.Ai}"/>
-                <TextBox Watermark="movelist" Text="{Binding FighterManager.Fighter.MoveList}"/>
-                <TextBox Watermark="stcommon" Text="{Binding FighterManager.Fighter.StCommon}"/>
+                <controls:AdvancedTextBox TextBinding="{Binding DefinitionPath}" IsEnabled="False"/>
+                <controls:AdvancedTextBox TextBinding="{Binding Cmd}"/>
+                <controls:AdvancedTextBox TextBinding="{Binding Cns}"/>
+                <controls:AdvancedTextBox TextBinding="{Binding Sprite}"/>
+                <controls:AdvancedTextBox TextBinding="{Binding Anim}"/>
+                <controls:AdvancedTextBox TextBinding="{Binding Sound}"/>
+                <controls:AdvancedTextBox TextBinding="{Binding Ai}"/>
+                <controls:AdvancedTextBox TextBinding="{Binding MoveList}"/>
+                <controls:AdvancedTextBox TextBinding="{Binding StCommon}"/>
               </StackPanel>
             </DockPanel>
-            <ItemsControl ItemsSource="{Binding FighterManager.Fighter.StFiles}">
+            <ItemsControl ItemsSource="{Binding StFiles}">
               <ItemsControl.ItemTemplate>
                 <DataTemplate>
                   <DockPanel Margin="0,0,0,5" LastChildFill="True">
@@ -99,7 +102,7 @@
             </ItemsControl>
             <DockPanel LastChildFill="True">
               <Button Width="100"  Content="Export All" DockPanel.Dock="Right"/>
-              <Button Content="Add 'st' File" Command="{Binding FighterManager.AddStateFileCommand}" HorizontalAlignment="Stretch" />
+              <Button Content="Add 'st' File" Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddStateFileCommand}" HorizontalAlignment="Stretch" />
             </DockPanel>
           </StackPanel>
         </ScrollViewer>
@@ -113,34 +116,34 @@
                   <Image Source="/Resources/stats.png" Height="150"/>
                   <StackPanel Grid.Column="1"  VerticalAlignment="Center">
                     <Grid ColumnDefinitions="*, *">
-                      <TextBox Watermark="Life" Text="{Binding FighterManager.Fighter.Life}"/>
-                      <TextBox Watermark="AirJuggle" Text="{Binding FighterManager.Fighter.AirJuggle}" Grid.Column="1"/>
+                      <controls:AdvancedTextBox TextBinding="{Binding Life}"/>
+                      <controls:AdvancedTextBox TextBinding="{Binding AirJuggle}" Grid.Column="1"/>
                     </Grid>
                     <Grid ColumnDefinitions="*, *">
-                      <TextBox Watermark="Attack" Text="{Binding FighterManager.Fighter.Attack}"/>
-                      <TextBox Watermark="Defence" Text="{Binding FighterManager.Fighter.Defence}"  Grid.Column="1"/>
+                      <controls:AdvancedTextBox TextBinding="{Binding Attack}"/>
+                      <controls:AdvancedTextBox TextBinding="{Binding Defence}"  Grid.Column="1"/>
                     </Grid>
                   </StackPanel>
                 </Grid>
                 <Grid ColumnDefinitions="*,*"  Margin="0,10,0,0">
                   <Image Source="/Resources/knockdown.png" Height="150"/>
                   <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBox Watermark="Liedown_Time" Text="{Binding FighterManager.Fighter.LieDown_Time}" />
-                    <TextBox Watermark="Fall_Defence_Up" Text="{Binding FighterManager.Fighter.Fall_Defence_Up}"/>
+                    <controls:AdvancedTextBox TextBinding="{Binding LieDown_Time}" />
+                    <controls:AdvancedTextBox TextBinding="{Binding Fall_Defence_Up}"/>
                   </StackPanel>
                 </Grid>
                 <Grid ColumnDefinitions="*,*"  Margin="0,10,0,0">
                   <Image Source="/Resources/blockspark.png" Height="150"/>
                   <StackPanel Grid.Column="1"  VerticalAlignment="Center">
-                    <TextBox Watermark="SparkNo" Text="{Binding FighterManager.Fighter.SparkNo}"/>
-                    <TextBox Watermark="Guard_SparkNo" Text="{Binding FighterManager.Fighter.Guard_SparkNo}"/>
+                    <controls:AdvancedTextBox TextBinding="{Binding SparkNo}"/>
+                    <controls:AdvancedTextBox TextBinding="{Binding Guard_SparkNo}"/>
                   </StackPanel>
                 </Grid>
                 <Grid ColumnDefinitions="*,*" Margin="0,10,0,0">
                   <Image Source="/Resources/sound.png" Height="150"/>
                   <StackPanel Grid.Column="1"  VerticalAlignment="Center">
-                    <TextBox Watermark="KO_Echo" Text="{Binding FighterManager.Fighter.KO_Echo}"/>
-                    <TextBox Watermark="Volume" Text="{Binding FighterManager.Fighter.Volume}"/>
+                    <controls:AdvancedTextBox TextBinding="{Binding KO_Echo}"/>
+                    <controls:AdvancedTextBox TextBinding="{Binding Volume}"/>
                   </StackPanel>
                 </Grid>
               </StackPanel>
@@ -153,16 +156,16 @@
                   <Image Source="/Resources/size.png" Height="150"/>
                   <StackPanel Grid.Column="1"  VerticalAlignment="Center">
                     <Grid ColumnDefinitions="*,*">
-                      <TextBox Watermark="XScale" Text="{Binding FighterManager.Fighter.XScale}"/>
-                      <TextBox Watermark="YScale" Text="{Binding FighterManager.Fighter.YScale}" Grid.Column="1"/>
+                      <controls:AdvancedTextBox TextBinding="{Binding XScale}"/>
+                      <controls:AdvancedTextBox TextBinding="{Binding YScale}" Grid.Column="1"/>
                     </Grid>
                     <Grid ColumnDefinitions="*,*">
-                      <TextBox Watermark="Height" Text="{Binding FighterManager.Fighter.Height}"/>
-                      <TextBox Watermark="Attack_Dist" Text="{Binding FighterManager.Fighter.Attack_Dist}" Grid.Column="1"/>
+                      <controls:AdvancedTextBox TextBinding="{Binding Height}"/>
+                      <controls:AdvancedTextBox TextBinding="{Binding Attack_Dist}" Grid.Column="1"/>
                     </Grid>
                     <Grid ColumnDefinitions="*,*">
-                      <TextBox Watermark="ShadowOffset" Text="{Binding FighterManager.Fighter.ShadowOffset}"/>
-                      <TextBox Watermark="Draw_Offset" Text="{Binding FighterManager.Fighter.Draw_Offset}" Grid.Column="1"/>
+                      <controls:AdvancedTextBox TextBinding="{Binding ShadowOffset}"/>
+                      <controls:AdvancedTextBox TextBinding="{Binding Draw_Offset}" Grid.Column="1"/>
                     </Grid>
                   </StackPanel>
                 </Grid>
@@ -170,20 +173,20 @@
                   <Image Source="/Resources/size.png" Height="150"/>
                   <StackPanel Grid.Column="1"  VerticalAlignment="Center">
                     <Grid ColumnDefinitions="*,*">
-                      <TextBox Watermark="Air_Back" Text="{Binding FighterManager.Fighter.Air_Back}"/>
-                      <TextBox Watermark="Air_Front" Text="{Binding FighterManager.Fighter.Air_Front}"  Grid.Column="1"/>
+                      <controls:AdvancedTextBox TextBinding="{Binding Air_Back}"/>
+                      <controls:AdvancedTextBox TextBinding="{Binding Air_Front}"  Grid.Column="1"/>
                     </Grid>
                     <Grid ColumnDefinitions="*,*">
-                      <TextBox Watermark="Ground_Back" Text="{Binding FighterManager.Fighter.Ground_Back}"/>
-                      <TextBox Watermark="Ground_Front" Text="{Binding FighterManager.Fighter.Ground_Front}" Grid.Column="1"/>
+                      <controls:AdvancedTextBox TextBinding="{Binding Ground_Back}"/>
+                      <controls:AdvancedTextBox TextBinding="{Binding Ground_Front}" Grid.Column="1"/>
                     </Grid>
                   </StackPanel>
                 </Grid>
                 <Grid ColumnDefinitions="*,*"  Margin="0,10,0,0">
                   <Image Source="/Resources/iceball.png" Height="150"/>
                   <StackPanel Grid.Column="1"  VerticalAlignment="Center">
-                    <TextBox Watermark="Proj_Attack_Dist" Text="{Binding FighterManager.Fighter.Proj_Attack_Dist}"/>
-                    <TextBox Watermark="Proj_DoScale" Text="{Binding FighterManager.Fighter.Proj_DoScale}"/>
+                    <controls:AdvancedTextBox TextBinding="{Binding Proj_Attack_Dist}"/>
+                    <controls:AdvancedTextBox TextBinding="{Binding Proj_DoScale}"/>
                   </StackPanel>
                 </Grid>
               </StackPanel>
@@ -193,68 +196,68 @@
             <ScrollViewer>
               <StackPanel>
                 <Grid ColumnDefinitions="*,*,*,*">
-                  <TextBox Watermark="YAccel" Text="{Binding FighterManager.Fighter.YAccel}" Grid.ColumnSpan="2"/>
-                  <TextBox Watermark="AirJump_Num" Text="{Binding FighterManager.Fighter.AirJump_Num}" Grid.Column="2"/>
-                  <TextBox Watermark="AirJump_Height" Text="{Binding FighterManager.Fighter.AirJump_Height}" Grid.Column="3"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding YAccel}" Grid.ColumnSpan="2"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding AirJump_Num}" Grid.Column="2"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding AirJump_Height}" Grid.Column="3"/>
                 </Grid>
                 <Grid ColumnDefinitions="*,*" Margin="0,10,0,0">
-                  <TextBox Watermark="AirRecover_Add" Text="{Binding FighterManager.Fighter.Air_GetHit_AirRecover_Add}"/>
-                  <TextBox Watermark="AirRecover_Mul" Text="{Binding FighterManager.Fighter.Air_GetHit_AirRecover_Mul}" Grid.Column="1"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Air_GetHit_AirRecover_Add}"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Air_GetHit_AirRecover_Mul}" Grid.Column="1"/>
                 </Grid>
                 <Grid ColumnDefinitions="*,*,*,*">
-                  <TextBox Watermark="AirRecover_Back" Text="{Binding FighterManager.Fighter.Air_GetHit_AirRecover_Back}"/>
-                  <TextBox Watermark="AirRecover_Up" Text="{Binding FighterManager.Fighter.Air_GetHit_AirRecover_Up}" Grid.Column="1"/>
-                  <TextBox Watermark="AirRecover_Down" Text="{Binding FighterManager.Fighter.Air_GetHit_AirRecover_Down}" Grid.Column="2"/>
-                  <TextBox Watermark="AirRecover_Fwd" Text="{Binding FighterManager.Fighter.Air_GetHit_AirRecover_Fwd}" Grid.Column="3"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Air_GetHit_AirRecover_Back}"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Air_GetHit_AirRecover_Up}" Grid.Column="1"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Air_GetHit_AirRecover_Down}" Grid.Column="2"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Air_GetHit_AirRecover_Fwd}" Grid.Column="3"/>
                 </Grid>
                 <Grid ColumnDefinitions="*,*,*,*">
-                  <TextBox Watermark="AirJump_Back" Text="{Binding FighterManager.Fighter.AirJump_Back}"/>
-                  <TextBox Watermark="AirJump_Neu" Text="{Binding FighterManager.Fighter.AirJump_Neu}" Grid.Column="1" Grid.ColumnSpan="2"/>
-                  <TextBox Watermark="AirJump_Fwd" Text="{Binding FighterManager.Fighter.AirJump_Fwd}" Grid.Column="3"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding AirJump_Back}"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding AirJump_Neu}" Grid.Column="1" Grid.ColumnSpan="2"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding AirJump_Fwd}" Grid.Column="3"/>
                 </Grid>
                 <Grid ColumnDefinitions="*,*,*,*">
-                  <TextBox Watermark="Jump_Back" Text="{Binding FighterManager.Fighter.Jump_Back}"/>
-                  <TextBox Watermark="Jump_Neu" Text="{Binding FighterManager.Fighter.Jump_Neu}" Grid.Column="1" Grid.ColumnSpan="2"/>
-                  <TextBox Watermark="Jump_Fwd" Text="{Binding FighterManager.Fighter.Jump_Fwd}" Grid.Column="3"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Jump_Back}"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Jump_Neu}" Grid.Column="1" Grid.ColumnSpan="2"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Jump_Fwd}" Grid.Column="3"/>
                 </Grid>
                 <Grid ColumnDefinitions="*,*,*,*">
-                  <TextBox Watermark="RunJump_Back" Text="{Binding FighterManager.Fighter.RunJump_Back}" VerticalAlignment="Bottom"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding RunJump_Back}" VerticalAlignment="Bottom"/>
                   <Image Source="/Resources/size.png" Height="150"  Grid.Column="1"  Grid.ColumnSpan="2"/>
-                  <TextBox Watermark="RunJump_Fwd" Text="{Binding FighterManager.Fighter.RunJump_Fwd}" VerticalAlignment="Bottom" Grid.Column="3"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding RunJump_Fwd}" VerticalAlignment="Bottom" Grid.Column="3"/>
                 </Grid>
                 <Grid ColumnDefinitions="*,*,*,*">
-                  <TextBox Watermark="Run_Back" Text="{Binding FighterManager.Fighter.Run_Back}"/>
-                  <TextBox Watermark="Walk_Back" Text="{Binding FighterManager.Fighter.Walk_Back}" Grid.Column="1"/>
-                  <TextBox Watermark="Walk_Fwd" Text="{Binding FighterManager.Fighter.Walk_Fwd}" Grid.Column="2"/>
-                  <TextBox Watermark="Run_Fwd" Text="{Binding FighterManager.Fighter.Run_Fwd}"  Grid.Column="3"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Run_Back}"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Walk_Back}" Grid.Column="1"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Walk_Fwd}" Grid.Column="2"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Run_Fwd}"  Grid.Column="3"/>
                 </Grid>
                 <Grid ColumnDefinitions="*,*,*,*">
-                  <TextBox Watermark="Stand_Friction" Text="{Binding FighterManager.Fighter.Stand_Friction}"/>
-                  <TextBox Watermark="Stand_Friction_Threshold" Text="{Binding FighterManager.Fighter.Stand_Friction_Threshold}" Grid.Column="1"/>
-                  <TextBox Watermark="Crouch_Friction" Text="{Binding FighterManager.Fighter.Crouch_Friction}"  Grid.Column="2"/>
-                  <TextBox Watermark="Crouch_Friction_Threshold" Text="{Binding FighterManager.Fighter.Crouch_Friction_Threshold}" Grid.Column="3"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Stand_Friction}"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Stand_Friction_Threshold}" Grid.Column="1"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Crouch_Friction}"  Grid.Column="2"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Crouch_Friction_Threshold}" Grid.Column="3"/>
                 </Grid>
                 <TextBlock Text="Air_GetHit and Bounce values" Classes="Title"/>
                 <Grid ColumnDefinitions="*,*,*,*">
-                  <TextBox Watermark="Air_GetHit_GroundLevel" Text="{Binding FighterManager.Fighter.Air_GetHit_GroundLevel}" Grid.Column="1"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Air_GetHit_GroundLevel}" Grid.Column="1"/>
                 </Grid>
                 <Grid ColumnDefinitions="*,*,*,*">
-                  <TextBox Watermark="Air_GetHit_Trip_GroundLevel" Text="{Binding FighterManager.Fighter.Air_GetHit_Trip_GroundLevel}" Grid.Column="1"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Air_GetHit_Trip_GroundLevel}" Grid.Column="1"/>
                 </Grid>
                 <Grid ColumnDefinitions="*,*,*,*">
-                  <TextBox Watermark="Air_GetHit_GroundRecover" Text="{Binding FighterManager.Fighter.Air_GetHit_GroundRecover}"/>
-                  <TextBox Watermark="Air_GetHit_GroundRecover_GroundLevel" Text="{Binding FighterManager.Fighter.Air_GetHit_GroundRecover_GroundLevel}" Grid.Column="1"/>
-                  <TextBox Watermark="Air_GetHit_GroundRecover_Ground_Threshold" Text="{Binding FighterManager.Fighter.Air_GetHit_GroundRecover_Ground_Threshold}" Grid.Column="3"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Air_GetHit_GroundRecover}"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Air_GetHit_GroundRecover_GroundLevel}" Grid.Column="1"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Air_GetHit_GroundRecover_Ground_Threshold}" Grid.Column="3"/>
                 </Grid>
                 <Grid ColumnDefinitions="*,*,*,*">
-                  <TextBox Watermark="Air_GetHit_AirRecover_YAccel" Text="{Binding FighterManager.Fighter.Air_GetHit_AirRecover_YAccel}"/>
-                  <TextBox Watermark="Air_GetHit_AirRecover_Threshold" Text="{Binding FighterManager.Fighter.Air_GetHit_AirRecover_Threshold}" Grid.Column="3"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Air_GetHit_AirRecover_YAccel}"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Air_GetHit_AirRecover_Threshold}" Grid.Column="3"/>
                 </Grid>
                 <Grid ColumnDefinitions="*,*,*,*">
-                  <TextBox Watermark="Down_Bounce_YAccel" Text="{Binding FighterManager.Fighter.Down_Bounce_YAccel}"/>
-                  <TextBox Watermark="Down_Bounce_GroundLevel" Text="{Binding FighterManager.Fighter.Down_Bounce_GroundLevel}" Grid.Column="1"/>
-                  <TextBox Watermark="Down_Bounce_Offset" Text="{Binding FighterManager.Fighter.Down_Bounce_Offset}" Grid.Column="2"/>
-                  <TextBox Watermark="Down_Friction_Threshold" Text="{Binding FighterManager.Fighter.Down_Friction_Threshold}" Grid.Column="3"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Down_Bounce_YAccel}"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Down_Bounce_GroundLevel}" Grid.Column="1"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Down_Bounce_Offset}" Grid.Column="2"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Down_Friction_Threshold}" Grid.Column="3"/>
                 </Grid>
               </StackPanel>
             </ScrollViewer>
@@ -263,23 +266,23 @@
             <ScrollViewer>
               <StackPanel>
                 <TextBlock Text="Quotes" Classes="Title"/>
-                <ItemsControl ItemsSource="{Binding FighterManager.Fighter.Quotes}">
+                <ItemsControl ItemsSource="{Binding Quotes}">
                   <ItemsControl.ItemTemplate>
                     <DataTemplate>
                       <TextBox Text="{Binding .}"/>
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <Button Content="Add Quote" Command="{Binding FighterManager.AddQuoteCommand}" />
+                <Button Content="Add Quote" Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddQuoteCommand}" />
                 <TextBlock Text="Japanese Quotes" Classes="Title"/>
-                <ItemsControl ItemsSource="{Binding FighterManager.Fighter.Ja_Quotes}">
+                <ItemsControl ItemsSource="{Binding Ja_Quotes}">
                   <ItemsControl.ItemTemplate>
                     <DataTemplate>
                       <TextBox Text="{Binding .}"/>
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <Button Content="Add Japanese Quote" Command="{Binding FighterManager.AddJapaneseQuoteCommand}" />
+                <Button Content="Add Japanese Quote" Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddJapaneseQuoteCommand}" />
               </StackPanel>
             </ScrollViewer>
           </TabItem>
@@ -290,9 +293,9 @@
         <TabControl Background="{StaticResource TabContentColor}">
           <TabItem Header="States">
           </TabItem>
-          <TabItem Header="{Binding FighterManager.Fighter.CommandDefinitions.Count, StringFormat='Commands ({0})'}">
+          <TabItem Header="{Binding CommandDefinitions.Count, StringFormat='Commands ({0})'}">
             <ScrollViewer>
-              <ItemsControl ItemsSource="{Binding FighterManager.Fighter.CommandDefinitions}" Background="{StaticResource TabContentColor}">
+              <ItemsControl ItemsSource="{Binding CommandDefinitions}" Background="{StaticResource TabContentColor}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate x:DataType="m:CommandDefinition">
                     <Border Background="{StaticResource ContentBorderColor}" Margin="5,5,5,0" Padding="5">

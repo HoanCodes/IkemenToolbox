@@ -4,6 +4,7 @@ using IkemenToolbox.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -29,44 +30,73 @@ namespace IkemenToolbox.Models
         #region def
 
         #region Info
+        [Display(Description = "Name of character")]
         [ObservableProperty] private string _name;
+        [Display(Description = "Name of character to display")]
         [ObservableProperty] private string _displayName;
+        [Display(Description = "Version of character (MM-DD-YYYY or X.XX)")]
         [ObservableProperty] private string _versionDate;
+        [Display(Description = "Version of M.U.G.E.N character works on (X.XX)")]
         [ObservableProperty] private string _mugenVersion;
+        [Display(Description = "Character author name")]
         [ObservableProperty] private string _author;
+        [Display(Description = "Default palettes in order of preference (up to 4)\nNumbering starts from 1")]
         [ObservableProperty] private string _pal_Defaults;
+        [Display(Description = "Local coordinate space width and height")]
         [ObservableProperty] private string _localCoord;
         #endregion
 
         #region Files
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _cmd;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _cns;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _stCommon;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _sprite;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _anim;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _sound;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _ai;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _moveList;
         [ObservableProperty] private ObservableCollection<string> _stFiles = new();
         #endregion
 
         #region Palette Keymap
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _x;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _y;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _z;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _a;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _b;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _c;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _x2;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _y2;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _z2;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _a2;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _b2;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _c2;
         #endregion
 
         #region Arcade
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _intro_Storyboard;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _ending_Storyboard;
         #endregion
 
@@ -75,78 +105,140 @@ namespace IkemenToolbox.Models
         #region cns
 
         #region Data
-
+        
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _life;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _attack;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _defence;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _fall_Defence_Up;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _lieDown_Time;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _airJuggle;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _sparkNo;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _guard_SparkNo;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _kO_Echo;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _volume;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _intPersistIndex;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _floatPersistIndex;
         #endregion
 
         #region Size
-
+        
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _xScale;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _yScale;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _ground_Back;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _ground_Front;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _air_Back;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _air_Front;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _height;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _attack_Dist;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _proj_Attack_Dist;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _proj_DoScale;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _head_Pos;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _mid_Pos;
+        [Display(Description = "TBA")]
         [ObservableProperty] private int _shadowOffset;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _draw_Offset;
         #endregion
 
         #region Velocity
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _walk_Fwd;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _walk_Back;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _run_Fwd;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _run_Back;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _jump_Neu;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _jump_Back;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _jump_Fwd;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _runJump_Back;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _runJump_Fwd;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _airJump_Neu;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _airJump_Back;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _airJump_Fwd;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _air_GetHit_GroundRecover;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _air_GetHit_AirRecover_Mul;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _air_GetHit_AirRecover_Add;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _air_GetHit_AirRecover_Back;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _air_GetHit_AirRecover_Fwd;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _air_GetHit_AirRecover_Up;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _air_GetHit_AirRecover_Down;
+        [Display(Description = "TBA")]
         #endregion
 
         #region Movement
         [ObservableProperty] private string _airJump_Num;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _airJump_Height;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _yAccel;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _stand_Friction;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _crouch_Friction;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _stand_Friction_Threshold;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _crouch_Friction_Threshold;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _air_GetHit_GroundLevel;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _air_GetHit_GroundRecover_Ground_Threshold;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _air_GetHit_GroundRecover_GroundLevel;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _air_GetHit_AirRecover_Threshold;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _air_GetHit_AirRecover_YAccel;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _air_GetHit_Trip_GroundLevel;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _down_Bounce_Offset;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _down_Bounce_YAccel;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _down_Bounce_GroundLevel;
+        [Display(Description = "TBA")]
         [ObservableProperty] private string _down_Friction_Threshold;
         #endregion
 
@@ -371,7 +463,7 @@ namespace IkemenToolbox.Models
 
         public async Task ExportDefinitionAsync()
         {
-            var fileName = DefinitionPath.Split('\\').Last();
+            var fileName = Path.GetFileName(DefinitionPath);
             var builder = new StringBuilder();
 
             builder.AppendSection(SectionType.Info);

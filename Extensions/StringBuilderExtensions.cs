@@ -4,18 +4,25 @@ namespace IkemenToolbox.Extensions
 {
     public static class StringBuilderExtensions
     {
-        public static void AppendSection(this StringBuilder builder, string sectionType, int? id = null, string name = null)
+        public static void AppendSection(this StringBuilder builder, string sectionType, int? id = null, string name = null, string language = null)
         {
-            builder.AppendLine($"[{sectionType}]");
+            var section = sectionType.Replace('_', ' ');
+
+            if (language != null)
+            {
+                section = language + "." + section;
+            }
+
+            builder.AppendLine($"[{section}]");
         }
-        public static void AppendKeyValue(this StringBuilder builder, string key, string value, bool isString = false)
+        public static void AppendKeyValue(this StringBuilder builder, string key, string value, bool addQuotes = false)
         {
-            if (!isString && string.IsNullOrWhiteSpace(value))
+            if (!addQuotes && string.IsNullOrWhiteSpace(value))
             {
                 return;
             }
 
-            builder.AppendLine(key + " = " + (isString ? $"\"{value}\"" : value));
+            builder.AppendLine(key + " = " + (addQuotes ? $"\"{value}\"" : value));
         }
     }
 }

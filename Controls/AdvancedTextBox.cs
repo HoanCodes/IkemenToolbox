@@ -1,10 +1,9 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.Input;
 using Avalonia.Markup.Xaml.MarkupExtensions;
+using IkemenToolbox.Extensions;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -31,7 +30,7 @@ namespace IkemenToolbox.Controls
                 // Automatically set Watermark
                 if (string.IsNullOrWhiteSpace(Watermark))
                 {
-                    Watermark = path.Substring(path.LastIndexOf('.') + 1);
+                    Watermark = path.SplitAndGetLast('.');
                 }
 
                 var property = DataContext?.GetType().GetProperty(path);
@@ -54,11 +53,6 @@ namespace IkemenToolbox.Controls
                     this.Bind(TextProperty, new Binding { Source = DataContext, Path = path });
                 }
             }
-        }
-
-        protected override void OnTextInput(TextInputEventArgs e)
-        {
-            base.OnTextInput(e);
         }
     }
 }

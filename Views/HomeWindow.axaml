@@ -69,8 +69,8 @@
             <DockPanel LastChildFill="True">
               <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" DockPanel.Dock="Right">
                 <Button Width="100" Content="Export" Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.ExportFileCommand}" CommandParameter="def"/>
-                <Button Width="100" Content="Export"/>
-                <Button Width="100" Content="Export"/>
+                <Button Width="100" Content="Export" Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.ExportFileCommand}" CommandParameter="cmd"/>
+                <Button Width="100" Content="Export" Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.ExportFileCommand}" CommandParameter="cns"/>
                 <Button Width="100" Content="Export" IsEnabled="False"/>
                 <Button Width="100" Content="Export" IsEnabled="False"/>
                 <Button Width="100" Content="Export" IsEnabled="False"/>
@@ -144,6 +144,13 @@
                   <StackPanel Grid.Column="1"  VerticalAlignment="Center">
                     <controls:AdvancedTextBox TextBinding="{Binding KO_Echo}"/>
                     <controls:AdvancedTextBox TextBinding="{Binding Volume}"/>
+                  </StackPanel>
+                </Grid>
+                <Grid ColumnDefinitions="*,*" Margin="0,10,0,0">
+                  <Image Source="/Resources/sound.png" Height="150"/>
+                  <StackPanel Grid.Column="1"  VerticalAlignment="Center">
+                    <controls:AdvancedTextBox TextBinding="{Binding IntPersistIndex}"/>
+                    <controls:AdvancedTextBox TextBinding="{Binding FloatPersistIndex}"/>
                   </StackPanel>
                 </Grid>
               </StackPanel>

@@ -49,7 +49,7 @@ namespace IkemenToolbox.Helpers
         static readonly PropertyInfo[] FighterProperties = typeof(Fighter).GetProperties();
         static readonly PropertyInfo[] StateProperties = typeof(State).GetProperties();
         static readonly PropertyInfo[] StateDefinitionProperties = typeof(StateDefinition).GetProperties();
-        private static PropertyInfo[] GetProperties<T>(T obj)
+        public static PropertyInfo[] GetProperties<T>(T obj)
         {
             var type = typeof(T);
 

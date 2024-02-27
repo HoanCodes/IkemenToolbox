@@ -106,7 +106,15 @@ namespace IkemenToolbox.Models
 
         #region Data
         
-        [Display(Description = "TBA")]
+        [Display(Description = 
+            "\bAmount of life the character starts with.\b\r\n" +
+            "Default = 1000\r\n\r\n" +
+            "You usually don't need to change this, but for characters from some games you'll have to do some math.\r\n\r\n" +
+            "Let's take CvS2 Sakura as example, she has 13600 life points when the average value is 14400. To recreate that in Mugen you'll have to do this calculation:\r\n\r\n" +
+            "(Char's Game Life) * (Mugen's Average Life) / (Game's Average Life)\r\n\r\n" +
+            "In Sakura's case, equals to:\r\n" +
+            "13600 * 1000 / 14400 = 944.444...\r\n" +
+            "So you'd use 944 or 945 as the life value, since Mugen doesn't accept floats there.")]
         [ObservableProperty] private int _life;
         [Display(Description = "TBA")]
         [ObservableProperty] private int _attack;
@@ -349,8 +357,8 @@ namespace IkemenToolbox.Models
                             break;
                         case SectionType.Remap: Remaps.Add(new StringStringKeyValue(key, value)); break;
                         case SectionType.Defaults: Defaults.Add(new StringStringKeyValue(key, value)); break;
-                        case SectionType.Quotes: Quotes.Add(value); break;
-                        case SectionType.Ja_Quotes: Ja_Quotes.Add(value); break;
+                        case SectionType.Quotes: Quotes.Add(value.Trim('"')); break;
+                        case SectionType.Ja_Quotes: Ja_Quotes.Add(value.Trim('"')); break;
                         case SectionType.Command:
                             PropertyHelper.SetValue(command, key, value);
                             break;

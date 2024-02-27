@@ -1,11 +1,18 @@
 ﻿using IkemenToolbox.Models;
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace IkemenToolbox.Extensions
 {
     public static class StringExtensions
     {
+        public static string SplitAndGetLast(this string text, char separator) => text[(text.LastIndexOf(separator) + 1)..];
+
+        public static PropertyInfo GetPropertyInfo(this string propertyName, Type type) => propertyName?.GetPropertyInfo(type.GetProperties());
+
+        public static PropertyInfo GetPropertyInfo(this string propertyName, PropertyInfo[] properties) => properties?.FirstOrDefault(x => x.Name.Equals(propertyName?.SplitAndGetLast('.'), StringComparison.OrdinalIgnoreCase));
+
         public static bool IsSection(this string value) => value.StartsWith("[");
 
         public static bool TryGetSection(this string value, out Section section)

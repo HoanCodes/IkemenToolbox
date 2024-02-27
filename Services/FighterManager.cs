@@ -37,10 +37,15 @@ namespace IkemenToolbox.Services
         [RelayCommand]
         private async Task ExportFileAsync(string fileName)
         {
+            var writer = new FighterWriter(Fighter);
+
             switch (fileName)
             {
                 case CommonFile.def:
-                    await Fighter.ExportDefinitionAsync();
+                    await writer.WriteDefAsync();
+                    break;
+                case CommonFile.cns:
+                    await writer.WriteCnsAsync();
                     break;
             }
         }

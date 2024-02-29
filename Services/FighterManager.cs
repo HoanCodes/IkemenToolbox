@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using IkemenToolbox.Helpers;
 using IkemenToolbox.Models;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -37,16 +39,26 @@ namespace IkemenToolbox.Services
         [RelayCommand]
         private async Task ExportFileAsync(string fileName)
         {
-            var writer = new FighterWriter(Fighter);
-
-            switch (fileName)
+            try
             {
-                case CommonFile.def:
-                    await writer.WriteDefAsync();
-                    break;
-                case CommonFile.cns:
-                    await writer.WriteCnsAsync();
-                    break;
+                var writer = new FighterWriter(Fighter);
+                switch (fileName)
+                {
+                    case CommonFile.def:
+                        await writer.WriteDefAsync();
+                        break;
+                    case CommonFile.cns:
+                        await writer.WriteCnsAsync();
+                        break;
+                    default:
+                        throw new InvalidOperationException("File Type not supported");
+                }
+
+                await Dialog.ShowAlertAsync(fileName + " EXPORTED");
+            }
+            catch (Exception ex)
+            {
+                await Dialog.ShowAlertAsync(ex.Message, "Unable to Export");
             }
         }
     }

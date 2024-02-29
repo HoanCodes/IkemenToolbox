@@ -25,6 +25,7 @@ namespace IkemenToolbox.Models
         #endregion Display Values
 
         [ObservableProperty] private string _definitionPath;
+        [ObservableProperty] private string _exportPath;
         public string FolderPath { get; set; }
 
         #region def
@@ -305,7 +306,16 @@ namespace IkemenToolbox.Models
         internal async Task InitializeAsync(string definitionPath)
         {
             DefinitionPath = definitionPath;
-            FolderPath = Path.GetDirectoryName(definitionPath) + "\\";
+            FolderPath = Path.GetDirectoryName(definitionPath) + '\\';
+
+#if DEBUG
+            ExportPath = FolderPath + "IkemenToolbox_Sample\\";
+            if (!Directory.Exists(ExportPath))
+            {
+                Directory.CreateDirectory(ExportPath);
+            }
+#endif
+
             Parse(await File.ReadAllTextAsync(definitionPath));
             await Task.WhenAll(
                 ParseFileAsync(Cmd),
@@ -523,16 +533,8 @@ namespace IkemenToolbox.Models
 
         private async Task ExportFileAsync(string name, string data)
         {
-            var filePath = FolderPath + name;
-
-#if DEBUG
-            var samplePath = FolderPath + "IkemenToolbox_Sample\\";
-            if (!Directory.Exists(samplePath))
-            {
-                Directory.CreateDirectory(samplePath);
-            }
-            filePath = samplePath + name;
-#endif
+            var folderPath = !string.IsNullOrWhiteSpace(ExportPath) ? ExportPath : FolderPath;
+            var filePath = folderPath.Trim('\\') + '\\' +  name;
 
             await File.WriteAllTextAsync(filePath, data);
         }

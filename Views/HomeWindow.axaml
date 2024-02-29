@@ -15,24 +15,26 @@
         Name="window">
   <Grid VerticalAlignment="Stretch" RowDefinitions="Auto,*" Background="{StaticResource TabHeaderColor}">
     <Grid Margin="10">
-      <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
-        <Button Width="100" DockPanel.Dock="Right" Command="{Binding OpenFolderCommand}">Folder</Button>
-        <Button Width="100" DockPanel.Dock="Right" Command="{Binding EditCommand}">Change</Button>
-        <TextBlock Text="{Binding FighterManager.Fighter.DisplayName}" FontSize="30" VerticalAlignment="Center" />
-      </DockPanel>
-      <DockPanel HorizontalAlignment="Stretch" LastChildFill="True" Background="{StaticResource TabHeaderColor}" IsVisible="{Binding IsEditingDefinitionPath}">
-        <Button Width="100" DockPanel.Dock="Right" Command="{Binding CancelCommand}">Cancel</Button>
-        <Button Width="100" DockPanel.Dock="Right" Command="{Binding SetDefinitionPathCommand}">Set</Button>
-        <TextBox Text="{Binding DefinitionPath}" Watermark="Fighter Definition Path" HorizontalAlignment="Stretch" DockPanel.Dock="Left" />
-      </DockPanel>
+      <Grid Height="120" ColumnDefinitions="*,150" RowDefinitions="*,*">
+        <TextBox Text="{Binding FighterManager.Fighter.DisplayName}" FontSize="30" VerticalAlignment="Center" Background="Transparent"/>
+        <TextBox Text="{Binding FighterManager.Fighter.ExportPath}" Watermark="Export Folder Path (leave blank for same folder)" Grid.Row="1"/>
+        <Button Width="150" DockPanel.Dock="Right" Command="{Binding OpenFolderCommand}" Grid.Column="1">Containing Folder</Button>
+        <Button Width="150" DockPanel.Dock="Right" Command="{Binding EditCommand}" Grid.Column="1" Grid.Row="1">Change Fighter</Button>
+      </Grid>
+      <Grid Background="{StaticResource TabHeaderColor}" IsVisible="{Binding IsEditingDefinitionPath}" Height="120" ColumnDefinitions="*,150" RowDefinitions="*,*">
+        <TextBlock Margin="10,0" FontSize="30" Opacity="0.5" Text="Select a Fighter..." VerticalAlignment="Center"/>
+        <TextBox Text="{Binding DefinitionPath}" Watermark="Fighter Definition Path"  Grid.Row="1"/>
+        <Button Width="150" Command="{Binding SetDefinitionPathCommand}" Grid.Column="1">Set Definition</Button>
+        <Button Width="150" Command="{Binding CancelCommand}" Grid.Column="1" Grid.Row="1">Cancel</Button>
+      </Grid>
     </Grid>
     <TabControl x:Name="MainTabControl" TabStripPlacement="Left" Background="{StaticResource TabHeaderColor}" Grid.Row="1" DataContext="{Binding FighterManager.Fighter}">
       <TabItem Header="Definition">
-        <ScrollViewer>
-          <StackPanel>
-            <TextBlock Text="Info" Classes="Title"/>
+        <ScrollViewer Background="{StaticResource TabContentColor}" Grid.ColumnSpan="2" Grid.RowSpan="4">
+          <StackPanel Margin="10">
+            <TextBlock Text="Info" Classes="Title" Margin="0"/>
             <Grid ColumnDefinitions="*, *, *, *">
-              <controls:AdvancedTextBox TextBinding="{Binding Name}"/>
+              <controls:AdvancedTextBox TextBinding="{Binding Name}" />
               <controls:AdvancedTextBox TextBinding="{Binding DisplayName}" Grid.Column="1"/>
               <controls:AdvancedTextBox TextBinding="{Binding Author}" Grid.Column="2" Grid.ColumnSpan="2"/>
             </Grid>
@@ -108,10 +110,10 @@
         </ScrollViewer>
       </TabItem>
       <TabItem Header="Constants">
-        <TabControl>
+        <TabControl Background="{StaticResource TabContentColor}">
           <TabItem Header="Data">
             <ScrollViewer>
-              <StackPanel>
+              <StackPanel Margin="10">
                 <Grid ColumnDefinitions="*,*">
                   <Image Source="/Resources/stats.png" Height="150"/>
                   <StackPanel Grid.Column="1"  VerticalAlignment="Center">

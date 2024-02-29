@@ -22,12 +22,14 @@
   <Application.Styles>
     <FluentTheme />
     <Style Selector="TextBox">
-      <Setter Property="Height" Value="55"/>
+      <Setter Property="Height" Value="60"/>
+      <Setter Property="BorderThickness" Value="2"/>
+      <Setter Property="BorderBrush" Value="Transparent"/>
       <Setter Property="UseFloatingWatermark" Value="{Binding Watermark, RelativeSource={RelativeSource Self}, Converter={StaticResource stringIsNotNullNorWhiteSpaceConverter}}"/>
       <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
     <Style Selector="Button">
-      <Setter Property="Height" Value="55"/>
+      <Setter Property="Height" Value="60"/>
       <Setter Property="HorizontalContentAlignment" Value="Center"/>
       <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>

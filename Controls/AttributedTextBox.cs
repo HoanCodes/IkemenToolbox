@@ -9,15 +9,11 @@ using System.Linq;
 
 namespace IkemenToolbox.Controls
 {
-    public class AdvancedTextBox : TextBox
+    public class AttributedTextBox : ImprovedTextBox
     {
         public BindingBase TextBinding { get; set; }
         public string BindingPath { get; set; }
         protected override Type StyleKeyOverride => typeof(TextBox);
-        protected override void OnSizeChanged(SizeChangedEventArgs e)
-        {
-            base.OnSizeChanged(e);
-        }
 
         protected override void OnDataContextChanged(EventArgs e)
         {
@@ -30,7 +26,7 @@ namespace IkemenToolbox.Controls
                 // Automatically set Watermark
                 if (string.IsNullOrWhiteSpace(Watermark))
                 {
-                    Watermark = path.SplitAndGetLast('.');
+                    ActualWatermark = path.SplitAndGetLast('.');
                 }
 
                 var property = DataContext?.GetType().GetProperty(path);
@@ -45,7 +41,7 @@ namespace IkemenToolbox.Controls
 
                         if (!string.IsNullOrWhiteSpace(display.Name))
                         {
-                            Watermark = display.Name;
+                            ActualWatermark = display.Name;
                         }
                     }
 

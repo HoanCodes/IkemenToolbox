@@ -1,6 +1,7 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="IkemenToolbox.App"
+             xmlns:controls="using:IkemenToolbox.Controls"
              xmlns:styles="using:IkemenToolbox.Styles"
              xmlns:local="using:IkemenToolbox"
              RequestedThemeVariant="Dark">
@@ -22,14 +23,19 @@
   <Application.Styles>
     <FluentTheme />
     <Style Selector="TextBox">
-      <Setter Property="Height" Value="60"/>
+      <Setter Property="Height" Value="64"/>
       <Setter Property="BorderThickness" Value="2"/>
       <Setter Property="BorderBrush" Value="Transparent"/>
       <Setter Property="UseFloatingWatermark" Value="{Binding Watermark, RelativeSource={RelativeSource Self}, Converter={StaticResource stringIsNotNullNorWhiteSpaceConverter}}"/>
       <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
+    <Style Selector="controls|AdvancedTextBox">
+      <Setter Property="Height" Value="64"/>
+      <Setter Property="BorderBackground" Value="#1c1c1c"/>
+      <Setter Property="TextBoxBackground" Value="#0b0a0a"/>
+    </Style>
     <Style Selector="Button">
-      <Setter Property="Height" Value="60"/>
+      <Setter Property="Height" Value="64"/>
       <Setter Property="HorizontalContentAlignment" Value="Center"/>
       <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>

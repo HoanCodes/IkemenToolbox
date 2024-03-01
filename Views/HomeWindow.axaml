@@ -12,16 +12,17 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="IkemenToolbox"
         TransparencyLevelHint="AcrylicBlur"
+        Focusable="True"
         Name="window">
   <Grid VerticalAlignment="Stretch" RowDefinitions="Auto,*" Background="{StaticResource TabHeaderColor}">
     <Grid Margin="10">
-      <Grid Height="120" ColumnDefinitions="*,150" RowDefinitions="*,*">
+      <Grid Height="128" ColumnDefinitions="*,150" RowDefinitions="*,*">
         <TextBox Text="{Binding FighterManager.Fighter.DisplayName}" FontSize="30" VerticalAlignment="Center" Background="Transparent"/>
         <TextBox Text="{Binding FighterManager.Fighter.ExportPath}" Watermark="Export Folder Path (leave blank for same folder)" Grid.Row="1"/>
         <Button Width="150" DockPanel.Dock="Right" Command="{Binding OpenFolderCommand}" Grid.Column="1">Containing Folder</Button>
         <Button Width="150" DockPanel.Dock="Right" Command="{Binding EditCommand}" Grid.Column="1" Grid.Row="1">Change Fighter</Button>
       </Grid>
-      <Grid Background="{StaticResource TabHeaderColor}" IsVisible="{Binding IsEditingDefinitionPath}" Height="120" ColumnDefinitions="*,150" RowDefinitions="*,*">
+      <Grid Background="{StaticResource TabHeaderColor}" IsVisible="{Binding IsEditingDefinitionPath}" Height="128" ColumnDefinitions="*,150" RowDefinitions="*,*">
         <TextBlock Margin="10,0" FontSize="30" Opacity="0.5" Text="Select a Fighter..." VerticalAlignment="Center"/>
         <TextBox Text="{Binding DefinitionPath}" Watermark="Fighter Definition Path"  Grid.Row="1"/>
         <Button Width="150" Command="{Binding SetDefinitionPathCommand}" Grid.Column="1">Set Definition</Button>
@@ -332,7 +333,7 @@
         </TabControl>
       </TabItem>
       <!--<TabItem Header="States">
-        <Grid ColumnDefinitions="120, 5, *" Background="{StaticResource TabContentColor}">
+        <Grid ColumnDefinitions="128, 5, *" Background="{StaticResource TabContentColor}">
           <ScrollViewer>
             <TabStrip AutoScrollToSelectedItem="True" Name="StateDefinitionsTabStrip" ItemsSource="{Binding FighterManager.Fighter.StateDefinitions}">
               <TabStrip.ItemTemplate>

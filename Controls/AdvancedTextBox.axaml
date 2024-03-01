@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="using:IkemenToolbox.Controls"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="450"
+             Height="64"
+             Padding="2"
+             x:Name="control"
+             x:Class="IkemenToolbox.Controls.AdvancedTextBox"
+             CornerRadius="5">
+  <Border Background="{Binding #control.BorderBackground}" CornerRadius="5">
+    <Grid ColumnDefinitions="*, 50" VerticalAlignment="Stretch" Margin="2">
+      <controls:ImprovedTextBox
+        x:Name="textBox"
+        ActualWatermark="{Binding #control.Watermark}"
+        Height="56"
+        Background="{Binding #control.TextBoxBackground}"
+        Foreground="{Binding #control.TextBoxForeground}"/>
+      <TextBlock
+        x:Name="textBlock"
+        Margin="10"
+        Background="{Binding #textBox.Background}"
+        IsEnabled="{Binding #textBox.IsEnabled}"
+        Text="{Binding #textBox.Text}"
+        VerticalAlignment="Bottom"
+        ToolTip.Tip="To be added"
+        ToolTip.ShowDelay="0"
+        ToolTip.Placement="Bottom"/>
+      <Border
+        x:Name="toolTipBorder"
+        Grid.Column="1"
+        Background="Transparent"
+        ToolTip.Tip="To be added"
+        ToolTip.ShowDelay="0"
+        ToolTip.VerticalOffset="0"
+        ToolTip.Placement="TopEdgeAlignedRight">
+        <Border BorderBrush="White" BorderThickness="2" Height="40" Width="40" CornerRadius="25">
+          <TextBlock
+            Text="?"
+            FontSize="24"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            IsHitTestVisible="False"/>
+        </Border>
+      </Border>
+    </Grid>
+  </Border>
+</UserControl>
+  

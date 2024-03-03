@@ -17,16 +17,13 @@
         Height="56"
         Background="{Binding #control.TextBoxBackground}"
         Foreground="{Binding #control.TextBoxForeground}"/>
-      <TextBlock
-        x:Name="textBlock"
-        Margin="10"
+      <StackPanel
         Background="{Binding #textBox.Background}"
-        IsEnabled="{Binding #textBox.IsEnabled}"
-        Text="{Binding #textBox.Text}"
+        x:Name="textStackPanel" 
+        Margin="12,10"
+        Orientation="Horizontal"
         VerticalAlignment="Bottom"
-        ToolTip.Tip="To be added"
-        ToolTip.ShowDelay="0"
-        ToolTip.Placement="Bottom"/>
+        Spacing="3"/>
       <Border
         x:Name="toolTipBorder"
         Grid.Column="1"

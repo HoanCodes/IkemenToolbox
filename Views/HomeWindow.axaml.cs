@@ -11,6 +11,10 @@ namespace IkemenToolbox.Views
         {
             InitializeComponent();
             DataContext = _vm;
+
+#if DEBUG
+            Title += " - DEBUGGING";
+#endif
         }
     }
 }

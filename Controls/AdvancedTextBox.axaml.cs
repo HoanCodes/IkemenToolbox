@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.Input;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using System.ComponentModel.DataAnnotations;
 using System;
@@ -51,24 +50,26 @@ namespace IkemenToolbox.Controls
         {
             InitializeComponent();
 
-            // Account for user hovering over TextBlock
-            textBlock.PointerEntered += (_, e) => textBox.RaiseEvent(e);
+            // Account for user hovering over textStackPanel
+            textStackPanel.PointerEntered += (_, e) => textBox.RaiseEvent(e);
+            textStackPanel.PointerExited += (_, e) => textBox.RaiseEvent(e);
 
             // Account for user clicking different places to activate the TextBox
             GotFocus += (_, __) => FocusTextBox();
-            textBlock.PointerPressed += (_, __) => FocusTextBox();
+            textStackPanel.PointerPressed += (_, __) => FocusTextBox();
 
             // Account for value changing when initializing a definition
             textBox.TextChanged += TextBox_TextChanged;
 
             // Format Text when Control loses focus
             textBox.LostFocus += (_, __) => FormatText();
+
         }
 
         private void FocusTextBox()
         {
             textBox.Focus();
-            textBox.SelectAll();
+            textBox.CaretIndex = textBox.Text != null ? textBox.Text.Length : 0;
             UpdateVisual();
         }
 
@@ -80,9 +81,49 @@ namespace IkemenToolbox.Controls
             }
         }
 
+        //Format text here
         private void FormatText()
         {
-            //Format text here
+            if (string.IsNullOrWhiteSpace(textBox.Text))
+            {
+                return;
+            }
+
+            var textBlock = new TextBlock();
+            var stackPanelChildren = textStackPanel.Children;
+            stackPanelChildren.Clear();
+
+            foreach (var containingText in textBox.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+            {
+                var text = containingText;
+
+                if (text.TryGetTip(out var tip))
+                {
+                    if (!string.IsNullOrWhiteSpace(textBlock.Text))
+                    {
+                        stackPanelChildren.Add(textBlock);
+                        textBlock = new();
+                    }
+
+                    var tippedTextBlock = new TextBlock
+                    {
+                        Text = text,
+                        Foreground = Brushes.Yellow,
+                    };
+                    ToolTip.SetTip(tippedTextBlock, tip);
+                    stackPanelChildren.Add(tippedTextBlock);
+
+                    continue;
+                }
+
+                textBlock.Text += (string.IsNullOrWhiteSpace(textBlock.Text) ? "" : " ") + text;
+            }
+
+            if (!string.IsNullOrWhiteSpace(textBlock.Text))
+            {
+                stackPanelChildren.Add(textBlock);
+            }
+
             UpdateVisual();
         }
 
@@ -112,10 +153,10 @@ namespace IkemenToolbox.Controls
                             displayAttributeName = display.Name;
                         }
                     }
-
-                    // Set up binding
-                    textBox.Bind(TextBox.TextProperty, new Binding { Source = DataContext, Path = path });
                 }
+
+                // Set up binding
+                textBox.Bind(TextBox.TextProperty, new Binding { Source = DataContext, Path = path });
 
                 Watermark ??= displayAttributeName ?? path.SplitAndGetLast('.');
             }
@@ -125,7 +166,8 @@ namespace IkemenToolbox.Controls
 
         private void UpdateVisual()
         {
-            textBlock.IsVisible = control.IsEnabled && !textBox.IsFocused && !string.IsNullOrWhiteSpace(textBox.Text);
+            textStackPanel.IsVisible = control.IsEnabled && !textBox.IsFocused && !string.IsNullOrWhiteSpace(textBox.Text);
+            textStackPanel.VerticalAlignment = !string.IsNullOrWhiteSpace(textBox.Watermark) ? Avalonia.Layout.VerticalAlignment.Bottom : Avalonia.Layout.VerticalAlignment.Center;
         }
     }
 }

@@ -10,10 +10,55 @@
         x:DataType="vm:HomeViewModel"
         Background="Transparent"
         Icon="/Assets/avalonia-logo.ico"
-        Title="IkemenToolbox"
+        Title="Ikemen Toolbox"
         TransparencyLevelHint="AcrylicBlur"
         Focusable="True"
         Name="window">
+  <Window.Resources>
+    <DataTemplate x:Key="StateTemplate" x:DataType="m:State">
+      <Expander Margin="5,0,5,5" HorizontalAlignment="Stretch" Padding="0" CornerRadius="5">
+        <Expander.Header>
+          <Grid Margin="-15,0,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Background="DimGray" Margin="5" Height="90" Width="90" CornerRadius="5" />
+            <TextBlock Text="IMAGE" VerticalAlignment="Center" HorizontalAlignment="Center">
+              <TextBlock.RenderTransform>
+                <RotateTransform Angle="45" />
+              </TextBlock.RenderTransform>
+            </TextBlock>
+            <StackPanel Margin="5" HorizontalAlignment="Stretch" Grid.Column="1">
+              <TextBlock Foreground="Gray" Text="{Binding Type}" Margin="5,5,5,0" />
+              <TextBlock Text="{Binding Name}" FontSize="20" />
+              <TextBox Text="{Binding Value}" Watermark="Value" Margin="5" />
+            </StackPanel>
+          </Grid>
+        </Expander.Header>
+        <StackPanel>
+          <ItemsControl ItemsSource="{Binding Triggers}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="m:Trigger">
+                <Border CornerRadius="5" Background="{StaticResource ContentBorderColor}" Padding="5" Margin="25,5,5,0">
+                  <StackPanel>
+                    <TextBlock Text="{Binding Key, StringFormat='trigger{0}'}" Margin="5,0" />
+                    <ItemsControl ItemsSource="{Binding Values}">
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                          <controls:AdvancedTextBox TextBinding="{Binding .}" />
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Expander>
+    </DataTemplate>
+  </Window.Resources>
   <Grid VerticalAlignment="Stretch" RowDefinitions="Auto,*" Background="{StaticResource TabHeaderColor}">
     <Grid Margin="10">
       <Grid Height="128" ColumnDefinitions="*,150" RowDefinitions="*,*">
@@ -70,10 +115,10 @@
             <TextBlock Text="Files" Classes="Title"/>
             <Button Content="Regenerate Properties" Height="30" HorizontalAlignment="Center"/>
             <DockPanel LastChildFill="True">
-              <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" DockPanel.Dock="Right">
-                <Button Width="100" Content="Export" Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.ExportFileCommand}" CommandParameter="def"/>
-                <Button Width="100" Content="Export" Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.ExportFileCommand}" CommandParameter="cmd"/>
-                <Button Width="100" Content="Export" Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.ExportFileCommand}" CommandParameter="cns"/>
+              <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" DockPanel.Dock="Right" DataContext="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager}">
+                <Button Width="100" Content="Export" Command="{Binding ExportFileCommand}" CommandParameter="def"/>
+                <Button Width="100" Content="Export" Command="{Binding ExportFileCommand}" CommandParameter="cmd"/>
+                <Button Width="100" Content="Export" Command="{Binding ExportFileCommand}" CommandParameter="cns"/>
                 <Button Width="100" Content="Export" IsEnabled="False"/>
                 <Button Width="100" Content="Export" IsEnabled="False"/>
                 <Button Width="100" Content="Export" IsEnabled="False"/>
@@ -267,6 +312,8 @@
                   <controls:AdvancedTextBox TextBinding="{Binding Down_Bounce_YAccel}"/>
                   <controls:AdvancedTextBox TextBinding="{Binding Down_Bounce_GroundLevel}" Grid.Column="1"/>
                   <controls:AdvancedTextBox TextBinding="{Binding Down_Bounce_Offset}" Grid.Column="2"/>
+                </Grid>
+                <Grid ColumnDefinitions="*,*,*,*">
                   <controls:AdvancedTextBox TextBinding="{Binding Down_Friction_Threshold}" Grid.Column="3"/>
                 </Grid>
               </StackPanel>
@@ -302,6 +349,9 @@
       <TabItem Header="Entry States">
         <TabControl Background="{StaticResource TabContentColor}">
           <TabItem Header="States">
+            <ScrollViewer>
+              <ItemsControl ItemTemplate="{StaticResource StateTemplate}" ItemsSource="{Binding EntryStateDefinition.States}" />
+            </ScrollViewer>
           </TabItem>
           <TabItem Header="{Binding CommandDefinitions.Count, StringFormat='Commands ({0})'}">
             <ScrollViewer>
@@ -314,11 +364,11 @@
                         <ItemsControl ItemsSource="{Binding Commands}">
                           <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="m:InputCommand">
-                              <Border Margin="5">
-                                <StackPanel>
+                              <Border>
+                                <DockPanel LastChildFill="True">
+                                  <TextBox Watermark="Time" Text="{Binding Time}" Width="128" DockPanel.Dock="Left"/>
                                   <TextBox Watermark="Command" Text="{Binding Command}"/>
-                                  <TextBox Watermark="Time" Text="{Binding Time}"/>
-                                </StackPanel>
+                                </DockPanel>
                               </Border>
                             </DataTemplate>
                           </ItemsControl.ItemTemplate>
@@ -332,10 +382,10 @@
           </TabItem>
         </TabControl>
       </TabItem>
-      <!--<TabItem Header="States">
+      <TabItem Header="States">
         <Grid ColumnDefinitions="128, 5, *" Background="{StaticResource TabContentColor}">
           <ScrollViewer>
-            <TabStrip AutoScrollToSelectedItem="True" Name="StateDefinitionsTabStrip" ItemsSource="{Binding FighterManager.Fighter.StateDefinitions}">
+            <TabStrip AutoScrollToSelectedItem="True" Name="StateDefinitionsTabStrip" ItemsSource="{Binding StateDefinitions}">
               <TabStrip.ItemTemplate>
                 <DataTemplate DataType="m:StateDefinition">
                   <TextBlock Text="{Binding DisplayName}"/>
@@ -344,7 +394,7 @@
             </TabStrip>
           </ScrollViewer>
           <GridSplitter Grid.Column="1"/>
-          <Carousel Grid.Column="2" Padding="0" Background="{StaticResource TabContentColor}" x:Name="StatesTab" VerticalAlignment="Stretch" ItemsSource="{Binding FighterManager.Fighter.StateDefinitions}"
+          <Carousel Grid.Column="2" Padding="0" Background="{StaticResource TabContentColor}" x:Name="StatesTab" VerticalAlignment="Stretch" ItemsSource="{Binding StateDefinitions}"
                     SelectedIndex="{Binding #StateDefinitionsTabStrip.SelectedIndex}">
             <Carousel.ItemTemplate>
               <DataTemplate x:DataType="m:StateDefinition">
@@ -401,7 +451,7 @@
             </Carousel.ItemTemplate>
           </Carousel>
         </Grid>
-      </TabItem>-->
+      </TabItem>
     </TabControl>
   </Grid>
 </Window>

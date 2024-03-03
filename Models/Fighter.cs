@@ -14,16 +14,6 @@ namespace IkemenToolbox.Models
 {
     public partial class Fighter : ObservableObject
     {
-        #region Display Values
-        public StateDefinition EntryStateDefinition => StateDefinitions.FirstOrDefault(x => x.Id == -1);
-
-        private void RaiseDisplayPropertiesChanged()
-        {
-            OnPropertyChanged(nameof(EntryStateDefinition));
-        }
-
-        #endregion Display Values
-
         [ObservableProperty] private string _definitionPath;
         [ObservableProperty] private string _exportPath;
         public string FolderPath { get; set; }
@@ -108,7 +98,7 @@ namespace IkemenToolbox.Models
         #region Data
         
         [Display(Description = 
-            "\bAmount of life the character starts with.\b\r\n" +
+            "Amount of life the character starts with.\r\n" +
             "Default = 1000\r\n\r\n" +
             "You usually don't need to change this, but for characters from some games you'll have to do some math.\r\n\r\n" +
             "Let's take CvS2 Sakura as example, she has 13600 life points when the average value is 14400. To recreate that in Mugen you'll have to do this calculation:\r\n\r\n" +
@@ -263,6 +253,7 @@ namespace IkemenToolbox.Models
         #endregion
 
         public ObservableCollection<StateDefinition> StateDefinitions { get; } = new();
+        [ObservableProperty] private StateDefinition _entryStateDefinition;
 
         private async Task<string> ReadFileAsync(string shortFilePath)
         {
@@ -322,7 +313,8 @@ namespace IkemenToolbox.Models
                 ParseFileAsync(Cns)
             );
 
-            RaiseDisplayPropertiesChanged();
+            EntryStateDefinition = StateDefinitions.FirstOrDefault(x => x.Id == -1);
+            StateDefinitions.Remove(EntryStateDefinition);
         }
 
         private async Task ParseFileAsync(string shortFilePath, params string[] ignoredSections) => Parse(await ReadFileAsync(shortFilePath), ignoredSections);

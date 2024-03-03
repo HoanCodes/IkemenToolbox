@@ -27,6 +27,8 @@ namespace IkemenToolbox.Services
 
             Fighter = new Fighter();
             await Fighter.InitializeAsync(path);
+
+            TooltipHelper.Initialize(Fighter);
         }
 
         [RelayCommand]

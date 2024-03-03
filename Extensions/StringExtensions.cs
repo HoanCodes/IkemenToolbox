@@ -1,4 +1,5 @@
-﻿using IkemenToolbox.Models;
+﻿using IkemenToolbox.Helpers;
+using IkemenToolbox.Models;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -91,6 +92,18 @@ namespace IkemenToolbox.Extensions
 
             key = split[0].Trim();
             value = split[1].Trim();
+
+            return true;
+        }
+
+        public static bool TryGetTip(this string text, out string tip)
+        {
+            tip = TooltipHelper.GetTip(text);
+
+            if (tip == null)
+            {
+                return false;
+            }
 
             return true;
         }

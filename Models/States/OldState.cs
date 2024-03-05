@@ -1,9 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 
 namespace IkemenToolbox.Models
 {
-    public class State
+    [Obsolete("Current State use a collection of key values instead for flexibility")]
+    public class OldState
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
         public string Value { get; set; }

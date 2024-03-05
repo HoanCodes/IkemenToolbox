@@ -47,7 +47,7 @@ namespace IkemenToolbox.Helpers
 
         // This is 100% over-optimizing but I was on a plane and was bored
         static readonly PropertyInfo[] FighterProperties = typeof(Fighter).GetProperties();
-        static readonly PropertyInfo[] StateProperties = typeof(State).GetProperties();
+        static readonly PropertyInfo[] StateProperties = typeof(OldState).GetProperties();
         static readonly PropertyInfo[] StateDefinitionProperties = typeof(StateDefinition).GetProperties();
         public static PropertyInfo[] GetProperties<T>(T obj)
         {
@@ -57,7 +57,7 @@ namespace IkemenToolbox.Helpers
             {
                 return FighterProperties;
             }
-            else if (type == typeof(State))
+            else if (type == typeof(OldState))
             {
                 return StateProperties;
             }

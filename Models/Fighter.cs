@@ -118,9 +118,9 @@ namespace IkemenToolbox.Models
         [Display(Description = "TBA")]
         [ObservableProperty] private int _airJuggle;
         [Display(Description = "TBA")]
-        [ObservableProperty] private int _sparkNo;
+        [ObservableProperty] private string _sparkNo;
         [Display(Description = "TBA")]
-        [ObservableProperty] private int _guard_SparkNo;
+        [ObservableProperty] private string _guard_SparkNo;
         [Display(Description = "TBA")]
         [ObservableProperty] private int _kO_Echo;
         [Display(Description = "TBA")]
@@ -288,7 +288,7 @@ namespace IkemenToolbox.Models
                     split[i] = split[i][..index];
                 }
 
-                split[i].Trim();
+                split[i] = split[i].Trim();
             }
 
             return split.ToArray();
@@ -327,7 +327,6 @@ namespace IkemenToolbox.Models
             List<InputCommand> commands = null;
 
             var state = new State();
-            var triggers = new List<KeyValuePair<string, string>>();
 
             Section section = null;
             StateDefinition stateDefinition = null;
@@ -365,13 +364,13 @@ namespace IkemenToolbox.Models
                             PropertyHelper.SetValue(command, key, value);
                             break;
                         case SectionType.State:
-                            if (key.StartsWith("trigger"))
+                            if (key == "type")
                             {
-                                triggers.Add(new(key, value));
+                                state.Type = value;
                             }
                             else
                             {
-                                PropertyHelper.SetValue(state, key, value);
+                                state.KeyValues.Add(new(key, value));
                             }
                             break;
                         case SectionType.Statedef:
@@ -401,18 +400,11 @@ namespace IkemenToolbox.Models
                                 break;
 
                             case SectionType.State:
-                                if (triggers != null)
-                                {
-                                    triggers.GroupBy(x => x.Key)
-                                        .ToList()
-                                        .ForEach(group => state.Triggers.Add(new Trigger(GetTriggerNum(group.Key), new ObservableCollection<string>(group.Select(trigger => trigger.Value)))));
-                                    triggers = new();
-                                }
-
+                                state.Id = section.Id;
                                 state.Name = section.Name;
                                 stateDefinition.States.Add(state);
 
-                                state = new State();
+                                state = new();
                                 break;
                         }
                     }
@@ -446,17 +438,6 @@ namespace IkemenToolbox.Models
                     section = nextSection;
                 }
             }
-        }
-
-        private void AddState(int id, string name, State state)
-        {
-            var collection = StateDefinitions.FirstOrDefault(x => x.Name == name);
-            if (collection == null)
-            {
-                collection = new StateDefinition(id, name);
-                StateDefinitions.Add(collection);
-            }
-            collection.States.Add(state);
         }
 
         private static int GetTriggerNum(string key)

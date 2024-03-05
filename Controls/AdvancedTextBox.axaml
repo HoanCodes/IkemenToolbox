@@ -10,38 +10,39 @@
              x:Class="IkemenToolbox.Controls.AdvancedTextBox"
              CornerRadius="5">
   <Border Background="{Binding #control.BorderBackground}" CornerRadius="5">
-    <Grid ColumnDefinitions="*, 50" VerticalAlignment="Stretch" Margin="2">
-      <controls:ImprovedTextBox
-        x:Name="textBox"
-        ActualWatermark="{Binding #control.Watermark}"
-        Height="56"
-        Background="{Binding #control.TextBoxBackground}"
-        Foreground="{Binding #control.TextBoxForeground}"/>
-      <StackPanel
-        Background="{Binding #textBox.Background}"
-        x:Name="textStackPanel" 
-        Margin="12,10"
-        Orientation="Horizontal"
-        VerticalAlignment="Bottom"
-        Spacing="3"/>
+    <DockPanel>
       <Border
+        Width="{Binding #textBox.Height}"
         x:Name="toolTipBorder"
         Grid.Column="1"
         Background="Transparent"
-        ToolTip.Tip="To be added"
         ToolTip.ShowDelay="0"
         ToolTip.VerticalOffset="0"
-        ToolTip.Placement="TopEdgeAlignedRight">
-        <Border BorderBrush="White" BorderThickness="2" Height="40" Width="40" CornerRadius="25">
-          <TextBlock
-            Text="?"
-            FontSize="24"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            IsHitTestVisible="False"/>
-        </Border>
+        ToolTip.Placement="TopEdgeAlignedRight"
+        DockPanel.Dock="Right"
+        IsVisible="{Binding #control.HasToolTip}">
+        <TextBlock
+          Text="[?]"
+          FontSize="24"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          IsHitTestVisible="False"/>
       </Border>
-    </Grid>
+      <Grid VerticalAlignment="Stretch" Margin="2">
+        <controls:ImprovedTextBox
+          x:Name="textBox"
+          ActualWatermark="{Binding #control.Watermark}"
+          Height="56"
+          Background="{Binding #control.TextBoxBackground}"
+          Foreground="{Binding #control.TextBoxForeground}"/>
+        <StackPanel
+          Background="{Binding #textBox.Background}"
+          x:Name="textStackPanel"
+          Margin="12,10"
+          Orientation="Horizontal"
+          Spacing="3"/>
+      </Grid>
+    </DockPanel>
   </Border>
 </UserControl>
   

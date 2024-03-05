@@ -1,26 +1,28 @@
-﻿using System.Collections.ObjectModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace IkemenToolbox.Models
 {
-    public class StateDefinition
+    public partial class StateDefinition : ObservableObject
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        [ObservableProperty]
+        private int? _id;
+        [ObservableProperty]
+        private string _name;
         public string DisplayName => !string.IsNullOrEmpty(Name) ? Name : "ID: " + Id.ToString();
-
-        public string Type { get; set; }
         public string MoveType { get; set; }
         public string Physics { get; set; }
-        public int Juggle { get; set; }
+        public string Juggle { get; set; }
 
-        public bool Ctrl { get; set; }
-        public int Anim { get; set; }
+        public string Ctrl { get; set; }
+        public string Anim { get; set; }
 
         public string VelSet { get; set; }
-        public int PowerAdd { get; set; }
-        public int SprPriority { get; set; }
+        public string PowerAdd { get; set; }
+        public string SprPriority { get; set; }
 
-        public ObservableCollection<State> States { get; set; } = new();
+        [ObservableProperty]
+        private ObservableCollection<State> _states = new();
 
         public StateDefinition(int id, string name)
         {

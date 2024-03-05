@@ -1,6 +1,6 @@
 ﻿namespace IkemenToolbox.Models
 {
-    public class PlaySndState : State
+    public class PlaySndState : OldState
     {
         public int Channel { get; set; }
     }

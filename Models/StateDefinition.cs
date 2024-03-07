@@ -5,25 +5,58 @@ namespace IkemenToolbox.Models
 {
     public partial class StateDefinition : ObservableObject
     {
-        [ObservableProperty]
-        private int? _id;
-        [ObservableProperty]
-        private string _name;
         public string DisplayName => !string.IsNullOrEmpty(Name) ? Name : "ID: " + Id.ToString();
-        public string MoveType { get; set; }
-        public string Physics { get; set; }
-        public string Juggle { get; set; }
 
-        public string Ctrl { get; set; }
-        public string Anim { get; set; }
+        private int? _id;
+        public int? Id
+        {
+            get => _id;
+            set
+            {
+                SetProperty(ref _id, value);
+                OnPropertyChanged(nameof(DisplayName));
+            }
+        }
 
-        public string VelSet { get; set; }
-        public string PowerAdd { get; set; }
-        public string SprPriority { get; set; }
+        private string _name;
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                SetProperty(ref _name, value);
+                OnPropertyChanged(nameof(DisplayName));
+            }
+        }
+
+        [ObservableProperty]
+        private string _description;
+
+        [ObservableProperty]
+        private string _type;
+        [ObservableProperty]
+        private string _moveType;
+        [ObservableProperty]
+        private string _physics;
+
+        [ObservableProperty]
+        private string _juggle;
+        [ObservableProperty]
+        private string _velSet;
+        [ObservableProperty]
+        private string _powerAdd;
+
+        [ObservableProperty]
+        private string _ctrl;
+        [ObservableProperty]
+        private string _anim;
+        [ObservableProperty]
+        private string _sprPriority;
 
         [ObservableProperty]
         private ObservableCollection<State> _states = new();
 
+        public StateDefinition() { }
         public StateDefinition(int id, string name)
         {
             Id = id;

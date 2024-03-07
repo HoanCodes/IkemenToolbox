@@ -253,7 +253,7 @@ namespace IkemenToolbox.Models
         #endregion
 
         public ObservableCollection<StateDefinition> StateDefinitions { get; } = new();
-        [ObservableProperty] private StateDefinition _entryStateDefinition;
+        [ObservableProperty] private ObservableCollection<State> _entryStates;
 
         private async Task<string> ReadFileAsync(string shortFilePath)
         {
@@ -274,18 +274,22 @@ namespace IkemenToolbox.Models
 
             for (var i = split.Count - 1; i >= 0; i--)
             {
-                // Remove comments
+                // Remove comments line if doesn't contain letters (use the rest to populate descriptions)
                 if (split[i].StartsWith(';'))
                 {
-                    split.RemoveAt(i);
+                    //if (!split[i].Any(x => char.IsLetterOrDigit(x)))
+                    //{
+                        split.RemoveAt(i);
+                    //}
+
                     continue;
                 }
 
                 // Remove inline comments
                 var index = split[i].IndexOf(';');
-                if (index != -1)
+                if (index > 0)
                 {
-                    split[i] = split[i][..index];
+                    split[i] = split[i][..--index];
                 }
 
                 split[i] = split[i].Trim();
@@ -313,8 +317,12 @@ namespace IkemenToolbox.Models
                 ParseFileAsync(Cns)
             );
 
-            EntryStateDefinition = StateDefinitions.FirstOrDefault(x => x.Id == -1);
-            StateDefinitions.Remove(EntryStateDefinition);
+            var entryStateDefinition = StateDefinitions.FirstOrDefault(x => x.Id == -1);
+            if (entryStateDefinition != null)
+            {
+                EntryStates = entryStateDefinition.States;
+                StateDefinitions.Remove(entryStateDefinition);
+            }
         }
 
         private async Task ParseFileAsync(string shortFilePath, params string[] ignoredSections) => Parse(await ReadFileAsync(shortFilePath), ignoredSections);
@@ -323,17 +331,24 @@ namespace IkemenToolbox.Models
             var dataArray = SplitData(data);
             var last = dataArray.Length - 1;
 
-            var command = new InputCommand();
-            List<InputCommand> commands = null;
+            var command = new CommandInput();
+            List<CommandInput> commands = null;
 
             var state = new State();
 
             Section section = null;
             StateDefinition stateDefinition = null;
 
+            // Iterate through each line of text file
             for (var i = 0; i < dataArray.Length; i++)
             {
                 var line = dataArray[i];
+
+                if (line.StartsWith(';'))
+                {
+                    //Ignore comments in initial passthrough
+                    continue;
+                }
 
                 if (line.TryGetKeyValue(out var key, out var value))
                 {
@@ -394,13 +409,13 @@ namespace IkemenToolbox.Models
                         switch (section.Type)
                         {
                             case SectionType.Command:
-                                commands ??= new List<InputCommand>();
+                                commands ??= new List<CommandInput>();
                                 commands.Add(command);
                                 command = new();
                                 break;
 
                             case SectionType.State:
-                                state.Id = section.Id;
+                                state.IsEntryState = section.Id == -1;
                                 state.Name = section.Name;
                                 stateDefinition.States.Add(state);
 
@@ -430,7 +445,7 @@ namespace IkemenToolbox.Models
                             CommandDefinitions.Add(new CommandDefinition
                             {
                                 Name = tempCommand.Name.Trim('"'),
-                                Commands = new ObservableCollection<InputCommand>(commands.Where(x => x.Name == tempCommand.Name).ToList()),
+                                CommandInputs = new ObservableCollection<CommandInput>(commands.Where(x => x.Name == tempCommand.Name).ToList()),
                             });
                         }
                     }

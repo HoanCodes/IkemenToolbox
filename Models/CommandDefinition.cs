@@ -1,10 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace IkemenToolbox.Models
 {
-    public class CommandDefinition
+    public partial class CommandDefinition : ObservableObject
     {
-        public string Name { get; set; }
-        public ObservableCollection<InputCommand> Commands { get; set; }
+        [ObservableProperty]
+        private string _name;
+        public ObservableCollection<CommandInput> CommandInputs { get; set; } = new ObservableCollection<CommandInput>();
     }
 }

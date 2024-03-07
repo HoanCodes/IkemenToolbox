@@ -15,21 +15,73 @@
         Focusable="True"
         Name="window">
   <Window.Resources>
-    <DataTemplate x:DataType="m:State" x:Key="StateTemplate">
-      <Border>
-        <Expander Margin="5,0,5,5" Padding="0" CornerRadius="5" HorizontalAlignment="Stretch">
-          <Expander.Header>
-            <Grid Margin="-15,0,0,0" ColumnDefinitions="64,128,192,*,*">
-              <Border Background="DimGray" Margin="5" Height="60" Width="60" CornerRadius="5" />
+    <DataTemplate DataType="m:StateDefinition" x:Key="StateDefinitionTabTemplate">
+      <Grid Height="64" ColumnDefinitions="64, *">
+        <Border Background="DimGray" >
+          <TextBlock Text="IMAGE" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock.RenderTransform>
+              <RotateTransform Angle="45" />
+            </TextBlock.RenderTransform>
+          </TextBlock>
+        </Border>
+        <TextBlock Text="{Binding DisplayName}" Grid.Column="1"/>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:DataType="m:StateDefinition" x:Key="StateDefinitionTemplate">
+      <ScrollViewer VerticalAlignment="Stretch">
+        <StackPanel Margin="10">
+          <Grid ColumnDefinitions="Auto,*">
+            <Border Background="DimGray" Width="{Binding Height, RelativeSource={RelativeSource Self}}">
               <TextBlock Text="IMAGE" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <TextBlock.RenderTransform>
                   <RotateTransform Angle="45" />
                 </TextBlock.RenderTransform>
               </TextBlock>
-              <TextBox Text="{Binding Id}" Grid.Column="1"/>
-              <controls:AdvancedTextBox TextBinding="{Binding Type}" Grid.Column="2"/>
-              <controls:AdvancedTextBox TextBinding="{Binding Name}" Grid.Column="3"/>
+            </Border>
+            <Grid Grid.Column="1" ColumnDefinitions="128,*" RowDefinitions="Auto, Auto">
+              <TextBox Text="{Binding Id}" Watermark="Id" Classes="Transparent"/>
+              <TextBox Text="{Binding Name}" Watermark="Name" Classes="Transparent" Grid.Column="1"/>
+              <TextBox Text="{Binding Description}" Watermark="Description" Classes="Editor" Grid.Row="1" Grid.ColumnSpan="2"/>
             </Grid>
+          </Grid>
+          <TextBlock Text="Configurations" Classes="Title"/>
+          <Grid ColumnDefinitions="*,*,*">
+            <controls:AdvancedTextBox TextBinding="{Binding Type}"/>
+            <controls:AdvancedTextBox TextBinding="{Binding MoveType}" Grid.Column="1"/>
+            <controls:AdvancedTextBox TextBinding="{Binding Physics}" Grid.Column="2"/>
+          </Grid>
+          <Grid ColumnDefinitions="*,*,*">
+            <controls:AdvancedTextBox TextBinding="{Binding Juggle}"/>
+            <controls:AdvancedTextBox TextBinding="{Binding VelSet}" Grid.Column="1"/>
+            <controls:AdvancedTextBox TextBinding="{Binding PowerAdd}" Grid.Column="2"/>
+          </Grid>
+          <Grid ColumnDefinitions="*,*,*" Margin="0,10,0,0">
+            <controls:AdvancedTextBox TextBinding="{Binding Ctrl}"/>
+            <controls:AdvancedTextBox TextBinding="{Binding Anim}" Grid.Column="1"/>
+            <controls:AdvancedTextBox TextBinding="{Binding SprPriority}" Grid.Column="2"/>
+          </Grid>
+          <TextBlock Text="States" Classes="Title"/>
+          <ItemsControl ItemsSource="{Binding States}" ItemTemplate="{StaticResource StateTemplate}"/>
+        </StackPanel>
+      </ScrollViewer>
+    </DataTemplate>
+    <DataTemplate x:DataType="m:State" x:Key="StateTemplate">
+      <Border>
+        <Expander Margin="0,5,0,0" Padding="0" CornerRadius="5" HorizontalAlignment="Stretch">
+          <Expander.Header>
+            <DockPanel Margin="-15,0,0,0">
+              <Border Background="DimGray" Margin="5" Height="60" Width="60" CornerRadius="5" IsVisible="{Binding IsEntryState}">
+                <TextBlock Text="IMAGE" VerticalAlignment="Center" HorizontalAlignment="Center">
+                  <TextBlock.RenderTransform>
+                    <RotateTransform Angle="45" />
+                  </TextBlock.RenderTransform>
+                </TextBlock>
+              </Border>
+              <Grid ColumnDefinitions="*,192,*">
+                <controls:AdvancedTextBox TextBinding="{Binding Name}"/>
+                <controls:AdvancedTextBox TextBinding="{Binding Type}" Grid.Column="1"/>
+              </Grid>
+            </DockPanel>
           </Expander.Header>
           <StackPanel>
             <ItemsControl ItemsSource="{Binding KeyValues}">
@@ -46,17 +98,44 @@
           </Expander>
       </Border>
     </DataTemplate>
+    <DataTemplate x:DataType="m:CommandDefinition" x:Key="CommandTemplate">
+      <Border Background="{StaticResource ContentBorderColor}" Margin="5,5,5,0" Padding="5">
+        <StackPanel>
+          <DockPanel>
+            <Button
+              DockPanel.Dock="Right"
+              Width="128"
+              Grid.Column="1"
+              Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddCommandInputCommand}"
+              CommandParameter="{Binding .}">
+              Add Input
+            </Button>
+            <controls:AdvancedTextBox TextBinding="{Binding Name}" />
+          </DockPanel>
+          <ItemsControl ItemsSource="{Binding CommandInputs}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="m:CommandInput">
+                <DockPanel LastChildFill="True">
+                  <controls:AdvancedTextBox TextBinding="{Binding Time}" Width="128"/>
+                  <controls:AdvancedTextBox TextBinding="{Binding Command}"/>
+                </DockPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+    </DataTemplate>
   </Window.Resources>
   <Grid VerticalAlignment="Stretch" RowDefinitions="Auto,*" Background="{StaticResource TabHeaderColor}">
     <Grid Margin="10">
       <Grid Height="128" ColumnDefinitions="*,150" RowDefinitions="*,*">
-        <TextBox Text="{Binding FighterManager.Fighter.DisplayName}" FontSize="30" VerticalAlignment="Center" Background="Transparent"/>
+        <TextBox Text="{Binding FighterManager.Fighter.DisplayName}" Classes="Transparent" FontSize="32"/>
         <TextBox Text="{Binding FighterManager.Fighter.ExportPath}" Watermark="Export Folder Path (leave blank for same folder)" Grid.Row="1"/>
         <Button Width="150" DockPanel.Dock="Right" Command="{Binding OpenFolderCommand}" Grid.Column="1">Containing Folder</Button>
         <Button Width="150" DockPanel.Dock="Right" Command="{Binding EditCommand}" Grid.Column="1" Grid.Row="1">Change Fighter</Button>
       </Grid>
       <Grid Background="{StaticResource TabHeaderColor}" IsVisible="{Binding IsEditingDefinitionPath}" Height="128" ColumnDefinitions="*,150" RowDefinitions="*,*">
-        <TextBlock Margin="10,0" FontSize="30" Opacity="0.5" Text="Select a Fighter..." VerticalAlignment="Center"/>
+        <TextBlock Margin="10,0" FontSize="32" Opacity="0.5" Text="Select a Fighter..." VerticalAlignment="Center"/>
         <TextBox Text="{Binding DefinitionPath}" Watermark="Fighter Definition Path"  Grid.Row="1"/>
         <Button Width="150" Command="{Binding SetDefinitionPathCommand}" Grid.Column="1">Set Definition</Button>
         <Button Width="150" Command="{Binding CancelCommand}" Grid.Column="1" Grid.Row="1">Cancel</Button>
@@ -66,7 +145,7 @@
       <TabItem Header="Definition">
         <ScrollViewer Background="{StaticResource TabContentColor}" Grid.ColumnSpan="2" Grid.RowSpan="4">
           <StackPanel Margin="10">
-            <TextBlock Text="Info" Classes="Title" Margin="0"/>
+            <TextBlock Text="Info" Classes="Title"/>
             <Grid ColumnDefinitions="*, *, *, *">
               <controls:AdvancedTextBox TextBinding="{Binding Name}" />
               <controls:AdvancedTextBox TextBinding="{Binding DisplayName}" Grid.Column="1"/>
@@ -147,10 +226,9 @@
         <TabControl Background="{StaticResource TabContentColor}">
           <TabItem Header="Data">
             <ScrollViewer>
-              <StackPanel Margin="10">
+              <StackPanel Margin="10" Spacing="10">
                 <Grid ColumnDefinitions="*,*">
-                  <Image Source="/Resources/stats.png" Height="150"/>
-                  <StackPanel Grid.Column="1"  VerticalAlignment="Center">
+                  <StackPanel VerticalAlignment="Center">
                     <Grid ColumnDefinitions="*, *">
                       <controls:AdvancedTextBox TextBinding="{Binding Life}"/>
                       <controls:AdvancedTextBox TextBinding="{Binding AirJuggle}" Grid.Column="1"/>
@@ -160,44 +238,44 @@
                       <controls:AdvancedTextBox TextBinding="{Binding Defence}"  Grid.Column="1"/>
                     </Grid>
                   </StackPanel>
+                  <Image Source="/Resources/stats.png" Height="150" Grid.Column="1"/>
                 </Grid>
-                <Grid ColumnDefinitions="*,*"  Margin="0,10,0,0">
-                  <Image Source="/Resources/knockdown.png" Height="150"/>
-                  <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <Grid ColumnDefinitions="*,*">
+                  <StackPanel VerticalAlignment="Center">
                     <controls:AdvancedTextBox TextBinding="{Binding LieDown_Time}" />
                     <controls:AdvancedTextBox TextBinding="{Binding Fall_Defence_Up}"/>
                   </StackPanel>
+                  <Image Source="/Resources/knockdown.png" Height="150" Grid.Column="1"/>
                 </Grid>
-                <Grid ColumnDefinitions="*,*"  Margin="0,10,0,0">
-                  <Image Source="/Resources/blockspark.png" Height="150"/>
-                  <StackPanel Grid.Column="1"  VerticalAlignment="Center">
+                <Grid ColumnDefinitions="*,*">
+                  <StackPanel VerticalAlignment="Center">
                     <controls:AdvancedTextBox TextBinding="{Binding SparkNo}"/>
                     <controls:AdvancedTextBox TextBinding="{Binding Guard_SparkNo}"/>
                   </StackPanel>
+                  <Image Source="/Resources/blockspark.png" Height="150" Grid.Column="1"/>
                 </Grid>
-                <Grid ColumnDefinitions="*,*" Margin="0,10,0,0">
-                  <Image Source="/Resources/sound.png" Height="150"/>
-                  <StackPanel Grid.Column="1"  VerticalAlignment="Center">
+                <Grid ColumnDefinitions="*,*">
+                  <StackPanel VerticalAlignment="Center">
                     <controls:AdvancedTextBox TextBinding="{Binding KO_Echo}"/>
                     <controls:AdvancedTextBox TextBinding="{Binding Volume}"/>
                   </StackPanel>
+                  <Image Source="/Resources/sound.png" Height="150" Grid.Column="1"/>
                 </Grid>
-                <Grid ColumnDefinitions="*,*" Margin="0,10,0,0">
-                  <Image Source="/Resources/sound.png" Height="150"/>
-                  <StackPanel Grid.Column="1"  VerticalAlignment="Center">
+                <Grid ColumnDefinitions="*,*">
+                  <StackPanel VerticalAlignment="Center">
                     <controls:AdvancedTextBox TextBinding="{Binding IntPersistIndex}"/>
                     <controls:AdvancedTextBox TextBinding="{Binding FloatPersistIndex}"/>
                   </StackPanel>
+                  <Image Source="/Resources/sound.png" Height="150" Grid.Column="1"/>
                 </Grid>
               </StackPanel>
             </ScrollViewer>
           </TabItem>
           <TabItem Header="Size">
             <ScrollViewer>
-              <StackPanel>
+              <StackPanel Margin="10" Spacing="10">
                 <Grid ColumnDefinitions="*,*">
-                  <Image Source="/Resources/size.png" Height="150"/>
-                  <StackPanel Grid.Column="1"  VerticalAlignment="Center">
+                  <StackPanel VerticalAlignment="Center">
                     <Grid ColumnDefinitions="*,*">
                       <controls:AdvancedTextBox TextBinding="{Binding XScale}"/>
                       <controls:AdvancedTextBox TextBinding="{Binding YScale}" Grid.Column="1"/>
@@ -211,33 +289,34 @@
                       <controls:AdvancedTextBox TextBinding="{Binding Draw_Offset}" Grid.Column="1"/>
                     </Grid>
                   </StackPanel>
+                  <Image Source="/Resources/size.png" Height="150" Grid.Column="1"/>
                 </Grid>
-                <Grid ColumnDefinitions="*,*" Margin="0,10,0,0">
-                  <Image Source="/Resources/size.png" Height="150"/>
-                  <StackPanel Grid.Column="1"  VerticalAlignment="Center">
+                <Grid ColumnDefinitions="*,*">
+                  <StackPanel VerticalAlignment="Center">
                     <Grid ColumnDefinitions="*,*">
                       <controls:AdvancedTextBox TextBinding="{Binding Air_Back}"/>
-                      <controls:AdvancedTextBox TextBinding="{Binding Air_Front}"  Grid.Column="1"/>
+                      <controls:AdvancedTextBox TextBinding="{Binding Air_Front}" Grid.Column="1"/>
                     </Grid>
                     <Grid ColumnDefinitions="*,*">
                       <controls:AdvancedTextBox TextBinding="{Binding Ground_Back}"/>
                       <controls:AdvancedTextBox TextBinding="{Binding Ground_Front}" Grid.Column="1"/>
                     </Grid>
                   </StackPanel>
+                  <Image Source="/Resources/size.png" Height="150" Grid.Column="1"/>
                 </Grid>
-                <Grid ColumnDefinitions="*,*"  Margin="0,10,0,0">
-                  <Image Source="/Resources/iceball.png" Height="150"/>
-                  <StackPanel Grid.Column="1"  VerticalAlignment="Center">
+                <Grid ColumnDefinitions="*,*">
+                  <StackPanel VerticalAlignment="Center">
                     <controls:AdvancedTextBox TextBinding="{Binding Proj_Attack_Dist}"/>
                     <controls:AdvancedTextBox TextBinding="{Binding Proj_DoScale}"/>
                   </StackPanel>
+                  <Image Source="/Resources/iceball.png" Height="150" Grid.Column="1"/>
                 </Grid>
               </StackPanel>
             </ScrollViewer>
           </TabItem>
           <TabItem Header="Movement and Velocity">
             <ScrollViewer>
-              <StackPanel>
+              <StackPanel Margin="10">
                 <Grid ColumnDefinitions="*,*,*,*">
                   <controls:AdvancedTextBox TextBinding="{Binding YAccel}" Grid.ColumnSpan="2"/>
                   <controls:AdvancedTextBox TextBinding="{Binding AirJump_Num}" Grid.Column="2"/>
@@ -338,48 +417,34 @@
         <TabControl Background="{StaticResource TabContentColor}">
           <TabItem Header="States">
             <ScrollViewer>
-              <ItemsControl ItemTemplate="{StaticResource StateTemplate}" ItemsSource="{Binding EntryStateDefinition.States}" />
+              <StackPanel>
+                <Button Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddEntryStateCommand}">
+                  Add State
+                </Button>
+                <ItemsControl ItemTemplate="{StaticResource StateTemplate}" ItemsSource="{Binding EntryStates}" />
+              </StackPanel>
             </ScrollViewer>
           </TabItem>
           <TabItem Header="{Binding CommandDefinitions.Count, StringFormat='Commands ({0})'}">
-            <ScrollViewer>
-              <ItemsControl ItemsSource="{Binding CommandDefinitions}" Background="{StaticResource TabContentColor}">
-                <ItemsControl.ItemTemplate>
-                  <DataTemplate x:DataType="m:CommandDefinition">
-                    <Border Background="{StaticResource ContentBorderColor}" Margin="5,5,5,0" Padding="5">
-                      <StackPanel>
-                        <TextBlock Text="{Binding Name}" />
-                        <ItemsControl ItemsSource="{Binding Commands}">
-                          <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="m:InputCommand">
-                              <Border>
-                                <DockPanel LastChildFill="True">
-                                  <TextBox Watermark="Time" Text="{Binding Time}" Width="128" DockPanel.Dock="Left"/>
-                                  <TextBox Watermark="Command" Text="{Binding Command}"/>
-                                </DockPanel>
-                              </Border>
-                            </DataTemplate>
-                          </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                      </StackPanel>
-                    </Border>
-                  </DataTemplate>
-                </ItemsControl.ItemTemplate>
-              </ItemsControl>
-            </ScrollViewer>
+              <ScrollViewer>
+                <StackPanel>
+                  <Button Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddCommandDefinitionCommand}">
+                    Add Command
+                  </Button>
+                  <ItemsControl ItemsSource="{Binding CommandDefinitions}" Background="{StaticResource TabContentColor}" ItemTemplate="{StaticResource CommandTemplate}"/>
+                </StackPanel>
+              </ScrollViewer>
           </TabItem>
         </TabControl>
       </TabItem>
       <TabItem Header="States">
-        <Grid ColumnDefinitions="128, 5, *" Background="{StaticResource TabContentColor}">
+        <Grid ColumnDefinitions="160, 5, *" Background="{StaticResource TabContentColor}">
           <ScrollViewer>
-            <TabStrip AutoScrollToSelectedItem="True" Name="StateDefinitionsTabStrip" ItemsSource="{Binding StateDefinitions}">
-              <TabStrip.ItemTemplate>
-                <DataTemplate DataType="m:StateDefinition">
-                  <TextBlock Text="{Binding DisplayName}"/>
-                </DataTemplate>
-              </TabStrip.ItemTemplate>
-            </TabStrip>
+            <ListBox Name="StateDefinitionsListBox"
+                     ItemsSource="{Binding StateDefinitions}"
+                     ItemTemplate="{StaticResource StateDefinitionTabTemplate}"
+                     AutoScrollToSelectedItem="True">
+            </ListBox>
           </ScrollViewer>
           <GridSplitter Grid.Column="1"/>
           <Carousel Grid.Column="2"
@@ -388,15 +453,8 @@
                     x:Name="StatesTab"
                     VerticalAlignment="Stretch"
                     ItemsSource="{Binding StateDefinitions}"
-                    SelectedIndex="{Binding #StateDefinitionsTabStrip.SelectedIndex}">
-            <Carousel.ItemTemplate>
-              <DataTemplate x:DataType="m:StateDefinition">
-                <ScrollViewer VerticalAlignment="Stretch">
-                  <ItemsControl ItemsSource="{Binding States}" ItemTemplate="{StaticResource StateTemplate}"/>
-                </ScrollViewer>
-              </DataTemplate>
-            </Carousel.ItemTemplate>
-          </Carousel>
+                    SelectedIndex="{Binding #StateDefinitionsListBox.SelectedIndex}"
+                    ItemTemplate="{StaticResource StateDefinitionTemplate}"/>
         </Grid>
       </TabItem>
     </TabControl>

@@ -14,10 +14,11 @@ namespace IkemenToolbox.Controls
     {
         private IDisposable _binding;
         public BindingBase TextBinding { get; set; }
-        public bool HasToolTip
+        public bool HasToolTip { get; set; } = true;
+        public bool IsToolTipVisible
         {
-            get => GetValue(HasToolTipProperty);
-            set => SetValue(HasToolTipProperty, value);
+            get => GetValue(IsToolTipVisibleProperty);
+            set => SetValue(IsToolTipVisibleProperty, value);
         }
         public bool HasInlineToolTip
         {
@@ -45,8 +46,8 @@ namespace IkemenToolbox.Controls
             set => SetValue(TextBoxForegroundProperty, value);
         }
 
-        public static readonly StyledProperty<bool> HasToolTipProperty =
-        AvaloniaProperty.Register<AdvancedTextBox, bool>(nameof(HasToolTip), true);
+        public static readonly StyledProperty<bool> IsToolTipVisibleProperty =
+        AvaloniaProperty.Register<AdvancedTextBox, bool>(nameof(IsToolTipVisible));
 
         public static readonly StyledProperty<bool> HasInlineToolTipProperty =
         AvaloniaProperty.Register<AdvancedTextBox, bool>(nameof(HasInlineToolTip));
@@ -170,11 +171,12 @@ namespace IkemenToolbox.Controls
                 {
                     if (!string.IsNullOrWhiteSpace(display?.Description))
                     {
+                        IsToolTipVisible = true;
                         ToolTip.SetTip(toolTipBorder, display.Description);
                     }
                     else
                     {
-                        HasToolTip = false;
+                        IsToolTipVisible = false;
                     }
                 }
             }

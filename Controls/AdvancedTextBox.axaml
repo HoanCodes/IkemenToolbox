@@ -20,7 +20,7 @@
         ToolTip.VerticalOffset="0"
         ToolTip.Placement="TopEdgeAlignedRight"
         DockPanel.Dock="Right"
-        IsVisible="{Binding #control.HasToolTip}">
+        IsVisible="{Binding #control.IsToolTipVisible}">
         <TextBlock
           Text="[?]"
           FontSize="24"

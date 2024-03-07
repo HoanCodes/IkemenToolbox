@@ -26,7 +26,7 @@ namespace IkemenToolbox.Helpers
             {
                 var builder = new StringBuilder();
 
-                foreach (var command in commandDefinition.Commands)
+                foreach (var command in commandDefinition.CommandInputs)
                 {
                     builder.AppendLine(command.Command + $" ({command.Time})");
                 }

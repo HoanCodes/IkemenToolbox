@@ -5,8 +5,7 @@ namespace IkemenToolbox.Models
 {
     public partial class State : ObservableObject
     {
-        [ObservableProperty]
-        private int? _id;
+        public bool IsEntryState { get; set; }
         [ObservableProperty]
         private string _type;
         [ObservableProperty]

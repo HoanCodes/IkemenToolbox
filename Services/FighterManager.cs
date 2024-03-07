@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using IkemenToolbox.Extensions;
 using IkemenToolbox.Helpers;
 using IkemenToolbox.Models;
 using System;
@@ -31,8 +32,27 @@ namespace IkemenToolbox.Services
             TooltipHelper.Initialize(Fighter);
         }
 
+        //Definition
         [RelayCommand]
         private void AddStateFile() => Fighter.StFiles.Add(string.Empty);
+
+        //Command
+        [RelayCommand]
+        private void AddEntryState() => Fighter.EntryStates.AddToStart(new());
+        [RelayCommand]
+        private void AddCommandDefinition() => Fighter.CommandDefinitions.AddToStart(new());
+        [RelayCommand]
+        private void AddCommandInput(CommandDefinition command) => command?.CommandInputs.Add(new());
+
+        //State
+        [RelayCommand]
+        private void AddStateDefinition() => Fighter.StateDefinitions.AddToStart(new());
+        [RelayCommand]
+        private void AddState(StateDefinition stateDefinition) => stateDefinition.States.AddToStart(new());
+        [RelayCommand]
+        private void AddStateKeyValue(State state) => state.KeyValues.Add(new());
+
+        //Quotes
         [RelayCommand]
         private void AddQuote() => Fighter.Quotes.Add(string.Empty);
         [RelayCommand]

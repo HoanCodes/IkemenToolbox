@@ -22,6 +22,9 @@
 
   <Application.Styles>
     <FluentTheme />
+    <Style Selector="Border">
+      <Setter Property="CornerRadius" Value="5"/>
+    </Style>
     <Style Selector="TextBox">
       <Setter Property="Height" Value="64"/>
       <Setter Property="Background" Value="#0b0a0a"/>
@@ -29,6 +32,19 @@
       <Setter Property="BorderBrush" Value="Transparent"/>
       <Setter Property="UseFloatingWatermark" Value="{Binding Watermark, RelativeSource={RelativeSource Self}, Converter={StaticResource stringIsNotNullNorWhiteSpaceConverter}}"/>
       <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="TextBox.Transparent">
+      <Setter Property="Height" Value="64"/>
+      <Setter Property="FontSize" Value="24"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="UseFloatingWatermark" Value="False"/>
+    </Style>
+    <Style Selector="TextBox.Editor">
+      <Setter Property="Height" Value="96"/>
+      <Setter Property="TextWrapping" Value="Wrap"/>
+      <Setter Property="AcceptsReturn" Value="True"/>
+      <Setter Property="UseFloatingWatermark" Value="False"/>
+      <Setter Property="VerticalContentAlignment" Value="Top"/>
     </Style>
     <Style Selector="TextBlock">
       <Setter Property="ToolTip.ShowDelay" Value="0"/>

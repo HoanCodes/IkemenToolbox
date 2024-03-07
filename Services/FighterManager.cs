@@ -17,6 +17,9 @@ namespace IkemenToolbox.Services
         [ObservableProperty]
         private Fighter _fighter = new Fighter();
 
+        [ObservableProperty]
+        private int _selectedStateDefinitionIndex;
+
         public FighterManager() => Instance = this;
 
         public async Task InitializeAsync(string path)
@@ -38,7 +41,7 @@ namespace IkemenToolbox.Services
 
         //Command
         [RelayCommand]
-        private void AddEntryState() => Fighter.EntryStates.AddToStart(new());
+        private void AddEntryState() => Fighter.EntryStates.AddToStart(new() { IsEntryState = true });
         [RelayCommand]
         private void AddCommandDefinition() => Fighter.CommandDefinitions.AddToStart(new());
         [RelayCommand]
@@ -46,9 +49,14 @@ namespace IkemenToolbox.Services
 
         //State
         [RelayCommand]
-        private void AddStateDefinition() => Fighter.StateDefinitions.AddToStart(new());
+        private void AddStateDefinition()
+        {
+            var stateDefinition = new StateDefinition();
+            Fighter.StateDefinitions.AddToStart(stateDefinition);
+            SelectedStateDefinitionIndex = 0;
+        }
         [RelayCommand]
-        private void AddState(StateDefinition stateDefinition) => stateDefinition.States.AddToStart(new());
+        private void AddState(StateDefinition stateDefinition) => stateDefinition.States.Add(new());
         [RelayCommand]
         private void AddStateKeyValue(State state) => state.KeyValues.Add(new());
 

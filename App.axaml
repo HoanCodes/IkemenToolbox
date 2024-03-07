@@ -59,6 +59,10 @@
       <Setter Property="HorizontalContentAlignment" Value="Center"/>
       <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
+    <Style Selector="Button.AddButton">
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
     <Style Selector="TextBlock.Title">
       <Setter Property="FontSize" Value="24"/>
       <Setter Property="Margin" Value="0,10,0,0"/>

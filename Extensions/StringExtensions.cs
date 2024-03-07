@@ -14,13 +14,13 @@ namespace IkemenToolbox.Extensions
 
         public static PropertyInfo GetPropertyInfo(this string propertyName, PropertyInfo[] properties) => properties?.FirstOrDefault(x => x.Name.Equals(propertyName?.SplitAndGetLast('.'), StringComparison.OrdinalIgnoreCase));
 
-        public static bool IsSection(this string value) => value.StartsWith("[");
+        public static bool IsHeader(this string value) => value.StartsWith("[");
 
-        public static bool TryGetSection(this string value, out Section section)
+        public static bool TryGetHeader(this string value, out Header section)
         {
             section = null;
 
-            if (!value.IsSection())
+            if (!value.IsHeader())
             {
                 return false;
             }
@@ -69,7 +69,7 @@ namespace IkemenToolbox.Extensions
                 type = char.ToUpper(type[0]) + type[1..];
             }
 
-            section = new Section
+            section = new Header
             {
                 Id = id,
                 Name = name,

@@ -1,6 +1,6 @@
 ﻿namespace IkemenToolbox
 {
-    public static class SectionType
+    public static class HeaderType
     {
         public const string State = nameof(State);
         public const string Statedef = nameof(Statedef);

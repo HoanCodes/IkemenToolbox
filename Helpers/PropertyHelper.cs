@@ -8,7 +8,9 @@ namespace IkemenToolbox.Helpers
     public static class PropertyHelper
     {
         static readonly Type IntType = typeof(int);
+        static readonly Type NullableIntType = typeof(int?);
         static readonly Type BoolType = typeof(bool);
+        static readonly Type NullableBoolType = typeof(bool?);
 
         public static void SetValue<T>(T obj, string propertyName, object value)
         {
@@ -23,11 +25,11 @@ namespace IkemenToolbox.Helpers
 
             var propertyType = property.PropertyType;
 
-            if (propertyType == IntType)
+            if (propertyType == IntType || propertyType == NullableIntType)
             {
                 property?.SetValue(obj, int.Parse(value.ToString()));
             }
-            else if (propertyType == BoolType)
+            else if (propertyType == BoolType || propertyType == NullableBoolType)
             {
                 property?.SetValue(obj, int.Parse(value.ToString()) == 1);
             }

@@ -289,7 +289,7 @@ namespace IkemenToolbox.Models
                 var index = split[i].IndexOf(';');
                 if (index > 0)
                 {
-                    split[i] = split[i][..--index];
+                    split[i] = split[i][..index];
                 }
 
                 split[i] = split[i].Trim();
@@ -325,8 +325,8 @@ namespace IkemenToolbox.Models
             }
         }
 
-        private async Task ParseFileAsync(string shortFilePath, params string[] ignoredSections) => Parse(await ReadFileAsync(shortFilePath), ignoredSections);
-        private void Parse(string data, params string[] ignoredSections)
+        private async Task ParseFileAsync(string shortFilePath, params string[] ignoredHeaders) => Parse(await ReadFileAsync(shortFilePath), ignoredHeaders);
+        private void Parse(string data, params string[] ignoredHeaders)
         {
             var dataArray = SplitData(data);
             var last = dataArray.Length - 1;
@@ -336,7 +336,7 @@ namespace IkemenToolbox.Models
 
             var state = new State();
 
-            Section section = null;
+            Header header = null;
             StateDefinition stateDefinition = null;
 
             // Iterate through each line of text file
@@ -352,18 +352,18 @@ namespace IkemenToolbox.Models
 
                 if (line.TryGetKeyValue(out var key, out var value))
                 {
-                    switch (section.Type)
+                    switch (header.Type)
                     {
-                        case SectionType.Info:
-                        case SectionType.Arcade:
-                        case SectionType.Palette_Keymap:
-                        case SectionType.Data:
-                        case SectionType.Size:
-                        case SectionType.Velocity:
-                        case SectionType.Movement:
+                        case HeaderType.Info:
+                        case HeaderType.Arcade:
+                        case HeaderType.Palette_Keymap:
+                        case HeaderType.Data:
+                        case HeaderType.Size:
+                        case HeaderType.Velocity:
+                        case HeaderType.Movement:
                             PropertyHelper.SetValue(this, key, value);
                             break;
-                        case SectionType.Files:
+                        case HeaderType.Files:
                             if (key.StartsWith("st") && key.Length <= 4)
                             {
                                 StFiles.Add(value);
@@ -371,14 +371,14 @@ namespace IkemenToolbox.Models
                             }
                             PropertyHelper.SetValue(this, key, value);
                             break;
-                        case SectionType.Remap: Remaps.Add(new StringStringKeyValue(key, value)); break;
-                        case SectionType.Defaults: Defaults.Add(new StringStringKeyValue(key, value)); break;
-                        case SectionType.Quotes: Quotes.Add(value.Trim('"')); break;
-                        case SectionType.Ja_Quotes: Ja_Quotes.Add(value.Trim('"')); break;
-                        case SectionType.Command:
+                        case HeaderType.Remap: Remaps.Add(new StringStringKeyValue(key, value)); break;
+                        case HeaderType.Defaults: Defaults.Add(new StringStringKeyValue(key, value)); break;
+                        case HeaderType.Quotes: Quotes.Add(value.Trim('"')); break;
+                        case HeaderType.Ja_Quotes: Ja_Quotes.Add(value.Trim('"')); break;
+                        case HeaderType.Command:
                             PropertyHelper.SetValue(command, key, value);
                             break;
-                        case SectionType.State:
+                        case HeaderType.State:
                             if (key == "type")
                             {
                                 state.Type = value;
@@ -388,35 +388,35 @@ namespace IkemenToolbox.Models
                                 state.KeyValues.Add(new(key, value));
                             }
                             break;
-                        case SectionType.Statedef:
+                        case HeaderType.Statedef:
                             PropertyHelper.SetValue(stateDefinition, key, value);
                             break;
                     }
                 }
 
-                Section nextSection = null;
+                Header nextHeader = null;
                 var next = i + 1;
                 var onLastLine = i == last;
 
-                if (i == 0 && line.TryGetSection(out nextSection))
+                if (i == 0 && line.TryGetHeader(out nextHeader))
                 {
-                    section = nextSection;
+                    header = nextHeader;
                 }
-                else if (i == last || dataArray[next].TryGetSection(out nextSection))
+                else if (i == last || dataArray[next].TryGetHeader(out nextHeader))
                 {
-                    if (section != null)
+                    if (header != null)
                     {
-                        switch (section.Type)
+                        switch (header.Type)
                         {
-                            case SectionType.Command:
+                            case HeaderType.Command:
                                 commands ??= new List<CommandInput>();
                                 commands.Add(command);
                                 command = new();
                                 break;
 
-                            case SectionType.State:
-                                state.IsEntryState = section.Id == -1;
-                                state.Name = section.Name;
+                            case HeaderType.State:
+                                state.IsEntryState = header.Id == -1;
+                                state.Name = header.Name;
                                 stateDefinition.States.Add(state);
 
                                 state = new();
@@ -428,13 +428,13 @@ namespace IkemenToolbox.Models
                     {
                         StateDefinitions.Add(stateDefinition);
                     }
-                    else if (nextSection?.Type == SectionType.Statedef)
+                    else if (nextHeader?.Type == HeaderType.Statedef)
                     {
                         if (stateDefinition != null)
                         {
                             StateDefinitions.Add(stateDefinition);
                         }
-                        stateDefinition = new StateDefinition((int)nextSection.Id, nextSection.Name);
+                        stateDefinition = new StateDefinition((int)nextHeader.Id, nextHeader.Name);
                     }
 
                     if (i == last && commands != null)
@@ -442,15 +442,11 @@ namespace IkemenToolbox.Models
                         var tempCommands = commands.DistinctBy(x => x.Name).ToList();
                         foreach (var tempCommand in tempCommands)
                         {
-                            CommandDefinitions.Add(new CommandDefinition
-                            {
-                                Name = tempCommand.Name.Trim('"'),
-                                CommandInputs = new ObservableCollection<CommandInput>(commands.Where(x => x.Name == tempCommand.Name).ToList()),
-                            });
+                            CommandDefinitions.Add(new CommandDefinition(tempCommand.Name.Trim('"'), commands.Where(x => x.Name == tempCommand.Name).ToList()));
                         }
                     }
 
-                    section = nextSection;
+                    header = nextHeader;
                 }
             }
         }
@@ -472,7 +468,7 @@ namespace IkemenToolbox.Models
             var fileName = Path.GetFileName(DefinitionPath);
             var builder = new StringBuilder();
 
-            builder.AppendSection(SectionType.Info);
+            builder.AppendHeader(HeaderType.Info);
             builder.AppendKeyValue("name", Name, true);
             builder.AppendKeyValue("displayname", DisplayName, true);
             builder.AppendKeyValue("versiondate", VersionDate);
@@ -482,7 +478,7 @@ namespace IkemenToolbox.Models
             builder.AppendKeyValue("localcoord", LocalCoord);
             builder.AppendLine();
 
-            builder.AppendSection(SectionType.Files);
+            builder.AppendHeader(HeaderType.Files);
             builder.AppendKeyValue(CommonFile.cmd, Cmd);
             builder.AppendKeyValue(CommonFile.cns, Cns);
             builder.AppendKeyValue(CommonFile.sprite, Sprite);
@@ -497,7 +493,7 @@ namespace IkemenToolbox.Models
             }
             builder.AppendLine();
 
-            builder.AppendSection(SectionType.Palette_Keymap);
+            builder.AppendHeader(HeaderType.Palette_Keymap);
             builder.AppendKeyValue("x", X);
             builder.AppendKeyValue("y", Y);
             builder.AppendKeyValue("z", Z);
@@ -512,7 +508,7 @@ namespace IkemenToolbox.Models
             builder.AppendKeyValue("c2", C2);
             builder.AppendLine();
 
-            builder.AppendSection(SectionType.Arcade);
+            builder.AppendHeader(HeaderType.Arcade);
             builder.AppendKeyValue("intro.storyboard", Intro_Storyboard);
             builder.AppendKeyValue("ending.storyboard", Ending_Storyboard);
 

@@ -5,7 +5,21 @@ namespace IkemenToolbox.Models
 {
     public partial class StateDefinition : ObservableObject
     {
-        public string DisplayName => !string.IsNullOrEmpty(Name) ? Name : "ID: " + Id.ToString();
+        public string DisplayName
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(Name))
+                {
+                    return Name;
+                }
+                if (Id != null)
+                {
+                    return "ID: " + Id;
+                }
+                return "New";
+            }
+        }
 
         private int? _id;
         public int? Id

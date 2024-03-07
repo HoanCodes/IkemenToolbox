@@ -4,7 +4,7 @@ namespace IkemenToolbox.Extensions
 {
     public static class StringBuilderExtensions
     {
-        public static void AppendSection(this StringBuilder builder, string sectionType, int? id = null, string name = null, string language = null)
+        public static void AppendHeader(this StringBuilder builder, string sectionType, int? id = null, string name = null, string language = null)
         {
             var section = sectionType.Replace('_', ' ');
 

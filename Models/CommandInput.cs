@@ -9,6 +9,6 @@ namespace IkemenToolbox.Models
         [ObservableProperty]
         private string _command;
         [ObservableProperty]
-        private int _time;
+        private int? _time;
     }
 }

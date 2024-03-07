@@ -16,34 +16,29 @@
         Name="window">
   <Window.Resources>
     <DataTemplate DataType="m:StateDefinition" x:Key="StateDefinitionTabTemplate">
-      <Grid Height="64" ColumnDefinitions="64, *">
-        <Border Background="DimGray" >
-          <TextBlock Text="IMAGE" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock.RenderTransform>
-              <RotateTransform Angle="45" />
-            </TextBlock.RenderTransform>
-          </TextBlock>
+      <StackPanel Orientation="Horizontal" Height="50" Margin="-5">
+        <Border Background="DimGray" Width="50">
+          <TextBlock Text="IMAGE" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Border>
-        <TextBlock Text="{Binding DisplayName}" Grid.Column="1"/>
-      </Grid>
+        <StackPanel VerticalAlignment="Center" Margin="5,0">
+          <TextBlock Text="{Binding DisplayName}" FontSize="20" />
+          <TextBlock Text="{Binding Id}" Foreground="LightGray" />
+        </StackPanel>
+      </StackPanel>
     </DataTemplate>
     <DataTemplate x:DataType="m:StateDefinition" x:Key="StateDefinitionTemplate">
       <ScrollViewer VerticalAlignment="Stretch">
         <StackPanel Margin="10">
-          <Grid ColumnDefinitions="Auto,*">
-            <Border Background="DimGray" Width="{Binding Height, RelativeSource={RelativeSource Self}}">
-              <TextBlock Text="IMAGE" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock.RenderTransform>
-                  <RotateTransform Angle="45" />
-                </TextBlock.RenderTransform>
-              </TextBlock>
+          <DockPanel Height="160">
+            <Border Background="DimGray" Width="160">
+              <TextBlock Text="IMAGE" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </Border>
-            <Grid Grid.Column="1" ColumnDefinitions="128,*" RowDefinitions="Auto, Auto">
+            <Grid Margin="5,0,0,0" ColumnDefinitions="128,*" RowDefinitions="Auto, Auto">
               <TextBox Text="{Binding Id}" Watermark="Id" Classes="Transparent"/>
               <TextBox Text="{Binding Name}" Watermark="Name" Classes="Transparent" Grid.Column="1"/>
               <TextBox Text="{Binding Description}" Watermark="Description" Classes="Editor" Grid.Row="1" Grid.ColumnSpan="2"/>
             </Grid>
-          </Grid>
+          </DockPanel>
           <TextBlock Text="Configurations" Classes="Title"/>
           <Grid ColumnDefinitions="*,*,*">
             <controls:AdvancedTextBox TextBinding="{Binding Type}"/>
@@ -62,6 +57,12 @@
           </Grid>
           <TextBlock Text="States" Classes="Title"/>
           <ItemsControl ItemsSource="{Binding States}" ItemTemplate="{StaticResource StateTemplate}"/>
+          <Button
+            Classes="AddButton"
+            Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddStateCommand}"
+            CommandParameter="{Binding .}">
+            + Add State
+          </Button>
         </StackPanel>
       </ScrollViewer>
     </DataTemplate>
@@ -71,11 +72,7 @@
           <Expander.Header>
             <DockPanel Margin="-15,0,0,0">
               <Border Background="DimGray" Margin="5" Height="60" Width="60" CornerRadius="5" IsVisible="{Binding IsEntryState}">
-                <TextBlock Text="IMAGE" VerticalAlignment="Center" HorizontalAlignment="Center">
-                  <TextBlock.RenderTransform>
-                    <RotateTransform Angle="45" />
-                  </TextBlock.RenderTransform>
-                </TextBlock>
+                <TextBlock Text="IMAGE" VerticalAlignment="Center" HorizontalAlignment="Center"/>
               </Border>
               <Grid ColumnDefinitions="*,192,*">
                 <controls:AdvancedTextBox TextBinding="{Binding Name}"/>
@@ -94,24 +91,20 @@
                 </DataTemplate>
               </ItemsControl.ItemTemplate>
             </ItemsControl>
+            <Button
+              Classes="AddButton"
+              Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddStateKeyValueCommand}"
+              CommandParameter="{Binding .}">
+              + Add Entry
+            </Button>
           </StackPanel>
           </Expander>
       </Border>
     </DataTemplate>
     <DataTemplate x:DataType="m:CommandDefinition" x:Key="CommandTemplate">
-      <Border Background="{StaticResource ContentBorderColor}" Margin="5,5,5,0" Padding="5">
+      <Border Background="{StaticResource ContentBorderColor}" Margin="0,5,0,0" Padding="5">
         <StackPanel>
-          <DockPanel>
-            <Button
-              DockPanel.Dock="Right"
-              Width="128"
-              Grid.Column="1"
-              Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddCommandInputCommand}"
-              CommandParameter="{Binding .}">
-              Add Input
-            </Button>
-            <controls:AdvancedTextBox TextBinding="{Binding Name}" />
-          </DockPanel>
+          <controls:AdvancedTextBox TextBinding="{Binding Name}" />
           <ItemsControl ItemsSource="{Binding CommandInputs}">
             <ItemsControl.ItemTemplate>
               <DataTemplate x:DataType="m:CommandInput">
@@ -122,6 +115,12 @@
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>
+          <Button
+            Classes="AddButton"
+            Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddCommandInputCommand}"
+            CommandParameter="{Binding .}">
+            + Add Input
+          </Button>
         </StackPanel>
       </Border>
     </DataTemplate>
@@ -418,8 +417,8 @@
           <TabItem Header="States">
             <ScrollViewer>
               <StackPanel>
-                <Button Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddEntryStateCommand}">
-                  Add State
+                <Button Classes="AddButton" Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddEntryStateCommand}">
+                  + Add State
                 </Button>
                 <ItemsControl ItemTemplate="{StaticResource StateTemplate}" ItemsSource="{Binding EntryStates}" />
               </StackPanel>
@@ -428,8 +427,8 @@
           <TabItem Header="{Binding CommandDefinitions.Count, StringFormat='Commands ({0})'}">
               <ScrollViewer>
                 <StackPanel>
-                  <Button Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddCommandDefinitionCommand}">
-                    Add Command
+                  <Button Classes="AddButton" Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddCommandDefinitionCommand}">
+                    + Add Command
                   </Button>
                   <ItemsControl ItemsSource="{Binding CommandDefinitions}" Background="{StaticResource TabContentColor}" ItemTemplate="{StaticResource CommandTemplate}"/>
                 </StackPanel>
@@ -437,20 +436,25 @@
           </TabItem>
         </TabControl>
       </TabItem>
-      <TabItem Header="States">
+      <TabItem Header="States" Name="StatesTab" IsVisible="False">
         <Grid ColumnDefinitions="160, 5, *" Background="{StaticResource TabContentColor}">
           <ScrollViewer>
-            <ListBox Name="StateDefinitionsListBox"
-                     ItemsSource="{Binding StateDefinitions}"
-                     ItemTemplate="{StaticResource StateDefinitionTabTemplate}"
-                     AutoScrollToSelectedItem="True">
-            </ListBox>
+            <StackPanel>
+              <Button Classes="AddButton" Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddStateDefinitionCommand}">
+                + Add Statedef
+              </Button>
+              <ListBox Name="StateDefinitionsListBox"
+                       ItemsSource="{Binding StateDefinitions}"
+                       ItemTemplate="{StaticResource StateDefinitionTabTemplate}"
+                       SelectedIndex="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.SelectedStateDefinitionIndex}"
+                       AutoScrollToSelectedItem="True">
+              </ListBox>
+            </StackPanel>
           </ScrollViewer>
           <GridSplitter Grid.Column="1"/>
           <Carousel Grid.Column="2"
                     Padding="0"
                     Background="{StaticResource TabContentColor}"
-                    x:Name="StatesTab"
                     VerticalAlignment="Stretch"
                     ItemsSource="{Binding StateDefinitions}"
                     SelectedIndex="{Binding #StateDefinitionsListBox.SelectedIndex}"

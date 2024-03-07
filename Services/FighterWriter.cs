@@ -57,8 +57,8 @@ namespace IkemenToolbox.Services
 
         public async Task WriteDefAsync()
         {
-            _builder.AppendSection(SectionType.Info);
-
+            _builder.AppendHeader(HeaderType.Info);
+               
             WriteKeyValue(nameof(_fighter.Name), isString: true);
             WriteKeyValue(nameof(_fighter.DisplayName), isString: true);
             WriteKeyValue(nameof(_fighter.VersionDate));
@@ -68,7 +68,7 @@ namespace IkemenToolbox.Services
             WriteKeyValue(nameof(_fighter.LocalCoord));
 
             _builder.AppendLine();
-            _builder.AppendSection(SectionType.Files);
+            _builder.AppendHeader(HeaderType.Files);
 
             WriteKeyValue(nameof(_fighter.Cmd));
             WriteKeyValue(nameof(_fighter.Cns));
@@ -84,7 +84,7 @@ namespace IkemenToolbox.Services
             }
 
             _builder.AppendLine();
-            _builder.AppendSection(SectionType.Palette_Keymap);
+            _builder.AppendHeader(HeaderType.Palette_Keymap);
 
             WriteKeyValue(nameof(_fighter.X));
             WriteKeyValue(nameof(_fighter.Y));
@@ -100,7 +100,7 @@ namespace IkemenToolbox.Services
             WriteKeyValue(nameof(_fighter.C2));
 
             _builder.AppendLine();
-            _builder.AppendSection(SectionType.Arcade);
+            _builder.AppendHeader(HeaderType.Arcade);
 
             WriteKeyValue(nameof(_fighter.Intro_Storyboard));
             WriteKeyValue(nameof(_fighter.Ending_Storyboard));
@@ -110,7 +110,7 @@ namespace IkemenToolbox.Services
 
         public async Task WriteCnsAsync()
         {
-            _builder.AppendSection(SectionType.Data);
+            _builder.AppendHeader(HeaderType.Data);
 
             WriteKeyValue(nameof(_fighter.Life));
             WriteKeyValue(nameof(_fighter.Attack));
@@ -129,7 +129,7 @@ namespace IkemenToolbox.Services
             WriteKeyValue(nameof(_fighter.FloatPersistIndex), "FloatPersistIndex");
 
             _builder.AppendLine();
-            _builder.AppendSection(SectionType.Size);
+            _builder.AppendHeader(HeaderType.Size);
 
             WriteKeyValue(nameof(_fighter.XScale));
             WriteKeyValue(nameof(_fighter.YScale));
@@ -152,7 +152,7 @@ namespace IkemenToolbox.Services
             WriteKeyValue(nameof(_fighter.Draw_Offset));
 
             _builder.AppendLine();
-            _builder.AppendSection(SectionType.Velocity);
+            _builder.AppendHeader(HeaderType.Velocity);
 
             WriteKeyValue(nameof(_fighter.Walk_Fwd));
             WriteKeyValue(nameof(_fighter.Walk_Back));
@@ -180,7 +180,7 @@ namespace IkemenToolbox.Services
             WriteKeyValue(nameof(_fighter.Air_GetHit_AirRecover_Down));
 
             _builder.AppendLine();
-            _builder.AppendSection(SectionType.Movement);
+            _builder.AppendHeader(HeaderType.Movement);
 
             WriteKeyValue(nameof(_fighter.AirJump_Num));
             WriteKeyValue(nameof(_fighter.AirJump_Height));
@@ -205,7 +205,7 @@ namespace IkemenToolbox.Services
             WriteKeyValue(nameof(_fighter.Down_Friction_Threshold));
 
             _builder.AppendLine();
-            _builder.AppendSection(SectionType.Quotes);
+            _builder.AppendHeader(HeaderType.Quotes);
 
             for (var i = 0; i < _fighter.Quotes.Count; i++)
             {
@@ -213,7 +213,7 @@ namespace IkemenToolbox.Services
             }
 
             _builder.AppendLine();
-            _builder.AppendSection(SectionType.Quotes, language:"ja");
+            _builder.AppendHeader(HeaderType.Quotes, language:"ja");
 
 
             for (var i = 0; i < _fighter.Ja_Quotes.Count; i++)

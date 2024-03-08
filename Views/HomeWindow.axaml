@@ -59,8 +59,7 @@
           <ItemsControl ItemsSource="{Binding States}" ItemTemplate="{StaticResource StateTemplate}"/>
           <Button
             Classes="AddButton"
-            Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddStateCommand}"
-            CommandParameter="{Binding .}">
+            Command="{Binding AddStateCommand}">
             + Add State
           </Button>
         </StackPanel>
@@ -93,8 +92,7 @@
             </ItemsControl>
             <Button
               Classes="AddButton"
-              Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddStateKeyValueCommand}"
-              CommandParameter="{Binding .}">
+              Command="{Binding AddKeyValueCommand}">
               + Add Entry
             </Button>
           </StackPanel>
@@ -117,7 +115,7 @@
           </ItemsControl>
           <Button
             Classes="AddButton"
-            Command="{Binding #window.((vm:HomeViewModel)DataContext).FighterManager.AddCommandInputCommand}"
+            Command="{Binding AddCommandInputCommand}"
             CommandParameter="{Binding .}">
             + Add Input
           </Button>

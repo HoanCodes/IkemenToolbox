@@ -5,6 +5,7 @@ using IkemenToolbox.Helpers;
 using IkemenToolbox.Models;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -38,33 +39,35 @@ namespace IkemenToolbox.Services
         //Definition
         [RelayCommand]
         private void AddStateFile() => Fighter.StFiles.Add(string.Empty);
+        [RelayCommand]
+        private void RemoveStateFile(string stFile) => Fighter.StFiles.Remove(stFile);
 
         //Command
         [RelayCommand]
         private void AddEntryState() => Fighter.EntryStates.AddToStart(new() { IsEntryState = true });
         [RelayCommand]
+        private void RemoveEntryState(State entryState) => Fighter.EntryStates.Remove(entryState);
+
+        [RelayCommand]
         private void AddCommandDefinition() => Fighter.CommandDefinitions.AddToStart(new());
         [RelayCommand]
-        private void AddCommandInput(CommandDefinition command) => command?.CommandInputs.Add(new());
+        private void RemoveCommandDefinition(CommandDefinition commandDefinition) => Fighter.CommandDefinitions.Remove(commandDefinition);
 
         //State
         [RelayCommand]
         private void AddStateDefinition()
         {
-            var stateDefinition = new StateDefinition();
-            Fighter.StateDefinitions.AddToStart(stateDefinition);
+            Fighter.StateDefinitions.AddToStart(new());
             SelectedStateDefinitionIndex = 0;
         }
-        [RelayCommand]
-        private void AddState(StateDefinition stateDefinition) => stateDefinition.States.Add(new());
-        [RelayCommand]
-        private void AddStateKeyValue(State state) => state.KeyValues.Add(new());
 
         //Quotes
         [RelayCommand]
         private void AddQuote() => Fighter.Quotes.Add(string.Empty);
         [RelayCommand]
         private void AddJapaneseQuote() => Fighter.Ja_Quotes.Add(string.Empty);
+        [RelayCommand]
+        private void RemoveJapaneseQuote() => Fighter.Ja_Quotes.Add(string.Empty);
 
         [RelayCommand]
         private async Task ExportFileAsync(string fileName)

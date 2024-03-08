@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -21,5 +22,11 @@ namespace IkemenToolbox.Models
             Name = name;
             CommandInputs = new ObservableCollection<CommandInput>(commandInputs);
         }
+
+
+        [RelayCommand]
+        private void AddCommandInput() => CommandInputs.Add(new());
+        [RelayCommand]
+        private void RemoveCommandInput(CommandInput commandInput) => CommandInputs.Remove(commandInput);
     }
 }

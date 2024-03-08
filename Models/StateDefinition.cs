@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
 namespace IkemenToolbox.Models
@@ -76,5 +77,10 @@ namespace IkemenToolbox.Models
             Id = id;
             Name = name;
         }
+
+        [RelayCommand]
+        private void AddState() => States.Add(new());
+        [RelayCommand]
+        private void RemoveState(State state) => States.Remove(state);
     }
 }

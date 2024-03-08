@@ -1,0 +1,2 @@
+﻿Portable packaging command:
+dotnet publish -r win7-x86 -f net6.0 -c Release /p:PublishSingleFile=true 
